@@ -1,6 +1,6 @@
-const fs = require('fs');
+import fs from "fs"
 
-class productManager {
+export default class ProductManager {
   #id = 0;
   #path = undefined;
 
@@ -150,13 +150,14 @@ class productManager {
 
 }
 
-let pd = new productManager();
-pd.addProduct("coca cola","sabor original", 600, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11324, 10)
-pd.addProduct("fanta","naranja", 700, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11324, 10)
-pd.addProduct("cunington","pomelo", 600, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11324, 10)
-pd.getProductById(2);
-pd.updateProduct(6,"title","manaos");
-pd.deleteProduct(1);
+let pd = new ProductManager();
+pd.addProduct("coca cola","sabor original", 600, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11374, 10)
+pd.addProduct("fanta","naranja", 700, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11364, 10)
+pd.addProduct("cunington","pomelo", 600, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11320, 10)
+pd.addProduct("baggio","multifruta", 800, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11328, 10)
+pd.addProduct("citric","naranja", 900, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11325, 10)
+pd.addProduct("fernet","branca", 1600, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11326, 10)
+pd.addProduct("heinkene","rubia", 900, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11327, 10)
 
 
  
