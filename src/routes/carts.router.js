@@ -5,7 +5,7 @@ const cd = new CartManager()
 
 const router = Router();
 
-router.get("/cart/:cid", async (req, res) => {
+router.get("/:cid", async (req, res) => {
     const cid = parseInt(req.params.cid)
     const carts = await cd.getCart()
     const cart = await carts.find((c) => c.cid === cid)
