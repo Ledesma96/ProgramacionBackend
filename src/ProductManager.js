@@ -22,7 +22,9 @@ export default class ProductManager {
     price = undefined,
     thumbnail = undefined,
     code = undefined,
-    stock = undefined
+    stock = undefined,
+    status = true,
+    category= undefined
   ) {
     try {
       const product = {
@@ -32,16 +34,16 @@ export default class ProductManager {
         thumbnail: thumbnail,
         code: code,
         stock: stock,
+        status: status,
+        category: category
       };
-      product.id = this.#getID();
+      product.pid = this.#getID();
       const actualprods = await this.getProducts();
 
-      console.log(actualprods);
-
-      const filtro = actualprods.filter((prod) => prod.id == product.id);
+      const filtro = actualprods.filter((prod) => prod.pid == product.pid);
 
       if (filtro.length) {
-        console.log('Este producto de ID:', product.id, 'ya existe');
+        console.log('Este producto de ID:', product.pid, 'ya existe');
         return;
       } else {
         actualprods.push(product);
@@ -60,9 +62,11 @@ export default class ProductManager {
       const content = await fs.promises.readFile(this.#path, 'utf-8');
       return JSON.parse(content);
     } catch (error) {
-      console.log('Hubo un error para obtener los productos:', error);
+      console.log('Hubo un error al obtener los productos:', error);
+      throw error; // Re-lanzar el error para manejarlo en un nivel superior si es necesario
     }
   }
+  
 
   async getProductById(id) {
     try {
@@ -74,7 +78,7 @@ export default class ProductManager {
         );
         return;
       } else {
-        const filtro = actualprods.filter((prod) => prod.id === id);
+        const filtro = actualprods.filter((prod) => prod.pid === id);
 
         if (filtro.length > 0) {
           console.log(
@@ -93,71 +97,58 @@ export default class ProductManager {
     }
   }
 
-  async updateProduct(id, campo, newValue) {
+  async updateProduct(pid, updateFields) {
     try {
       const actualprods = await this.getProducts();
-
-      if (actualprods.length == 0) {
-        console.log(
-          'No se puede actualizar nada, el archivo aún está vacío'
-        );
-        return;
-      }  else {
-          console.log(
-            'Usted desea actualizar producto de ID:',
-            id,
-            'campo:',
-            campo
-          );
-          const newFilter = actualprods.filter((prod) => prod.id === id);
-
-          if (newFilter.length == 0) {
-            console.log("No existe en la lista un objeto con el ID: ", id," no se puede actualizar nada.");
-            return
-          } else{
-           //Actualizo
-            const listUpdated = await newFilter.find((prod)=>{
-            prod[campo] = newValue;
-            return prod;
-            })
-            //Filtro una nueva lista sin el objeto anterior
-            const actualprodsupdated = await actualprods.filter(prod => prod.id !== id);
-            await actualprodsupdated.push(listUpdated);
-            await fs.promises.writeFile('./products.json', JSON.stringify(actualprods))
-            console.log("Lista actualizada: ", listUpdated);
-          }
-        }
-    } catch (error) {
-        console.log(error);
+    
+      if (actualprods.length === 0) {
+        console.log('No se puede actualizar nada, el archivo aún está vacío');
+        return false;
       }
+    
+      const productIndex = actualprods.findIndex((prod) => prod.pid === pid);
+      console.log(productIndex);
+    
+      if (productIndex === -1) {
+        console.log("No se encontró ningún producto con el ID:", pid);
+        return false;
+      }
+    
+      const updatedProduct = {
+        ...actualprods[productIndex],
+        ...updateFields
+      };
+    
+      actualprods[productIndex] = updatedProduct;
+    
+      await fs.promises.writeFile('./products.json', JSON.stringify(actualprods));
+      console.log("Producto actualizado correctamente.");
+      return true;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   }
-      async deleteProduct(id){
-        try {
-          const actualprods = await this.getProducts();
-          const testid = await actualprods.filter(prod => prod.id == id);
-           if (testid == 0) {
-              console.log("Este producto con el ID: ",id, "no existe en la lista. No se puede eliminar nada");
-              return
-            }else{
-              const listUpdated = await actualprods.filter(prod => prod.id !== id);
-              await fs.promises.writeFile('./products.json', JSON.stringify(listUpdated))
-               console.log("Lista con elemento de ID: ",id," eliminado", listUpdated);
-            }
-        } catch (error) {
-            console.log(error);
-          }
+  
+  
+  
+  async deleteProduct(id) {
+    try {
+      const actualprods = await this.getProducts();
+      const filteredProducts = actualprods.filter((prod) => prod.pid === id);
+  
+      if (filteredProducts.length === 0) {
+        throw new Error(`El producto con ID ${id} no existe en la lista. No se puede eliminar.`);
+      }
+  
+      const updatedProducts = actualprods.filter((prod) => prod.pid !== id);
+      await fs.promises.writeFile('./products.json', JSON.stringify(updatedProducts));
+      console.log(`Producto con ID ${id} eliminado correctamente.`);
+    } catch (error) {
+      console.log(error);
+      throw new Error("Ha ocurrido un error al intentar eliminar el producto.");
+    }
   }
+  
 
 }
-
-let pd = new ProductManager();
-pd.addProduct("coca cola","sabor original", 600, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11374, 10)
-pd.addProduct("fanta","naranja", 700, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11364, 10)
-pd.addProduct("cunington","pomelo", 600, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11320, 10)
-pd.addProduct("baggio","multifruta", 800, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11328, 10)
-pd.addProduct("citric","naranja", 900, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11325, 10)
-pd.addProduct("fernet","branca", 1600, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11326, 10)
-pd.addProduct("heinkene","rubia", 900, "https://d1on8qs0xdu5jz.cloudfront.net/webapp/images/fotos/b/0000000000/2176_1.jpg", 11327, 10)
-
-
- 
