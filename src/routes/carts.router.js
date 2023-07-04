@@ -23,41 +23,55 @@ router.get("/:cid", async (req, res) => {
 })
 
 router.post("/:cid", async (req, res) => {
-    try {
-      const cid = req.params.cid;
-      await cd.createCart(cid);
-      res.send("Se creó el carrito con ID: " + cid);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Ocurrió un error al crear el carrito");
+    const cid = parseInt(req.params.cid);
+    if(cid > 0){
+        try {
+            await cd.createCart(cid);
+            res.send("Se creó el carrito con ID: " + cid);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Ocurrió un error al crear el carrito");
+        }
+    } else {
+        res.status(404).send("ocurrio un error al crear el carrito de ID menor o igual a 0")
     }
+    
   });
+
+router.post("/", async (req, res) => {
+    try{
+        const cid = parseInt(1);
+        await cd.crateeCart(cid)
+        res.send("se ah creado el carrito")
+    } catch (e) {
+        res.status(500).send("ocurrio un error al crear el carrito")
+    }
+    
+    
+})
   
 
 
 router.post("/:cid/product/:pid", async (req, res) => {
     const cid = parseInt(req.params.cid);
     const pid = parseInt(req.params.pid); 
-    console.log(cid)
-    console.log(pid)
-    
-  
-    // Verificar si el carrito existe en la base de datos o en la memoria
-    const cart = await cd.getCart(cid);
-    
-    
-  
-    if  (!cart) {
-        return res.status(404).send("No se encontró el carrito especificado");
-    } 
-    try {
-      // Agregar el producto al carrito utilizando la función addCart del CartManager
-      await cd.addCart(cid, pid, 1);
-  
-      res.send("Producto agregado al carrito correctamente");
-    } catch (error) {
-      res.status(500).send("Error al agregar el producto al carrito");
+    if(cid > 0){
+        const cart = await cd.getCart(cid);
+        if  (!cart) {
+            return res.status(404).send("No se encontró el carrito especificado");
+        } 
+        try {
+        await cd.addCart(cid, pid, 1);
+        res.send("Producto agregado al carrito correctamente");
+        } catch (error) {
+        res.status(500).send("Error al agregar el producto al carrito");
+        }
+    } else {
+        res.status(404).send("Imposible acceder a carritos de id menor o igual a 0")
     }
+  
+    
+    
   });
   
 
