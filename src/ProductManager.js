@@ -1,3 +1,4 @@
+import { log } from "console";
 import fs from "fs"
 
 export default class ProductManager {
@@ -20,11 +21,11 @@ export default class ProductManager {
     title = undefined,
     description = undefined,
     price = undefined,
-    thumbnail = undefined,
+    thumbnail = [],
     code = undefined,
     stock = undefined,
     status = true,
-    category= undefined
+    category = undefined
   ) {
     try {
       const product = {
@@ -37,25 +38,32 @@ export default class ProductManager {
         status: status,
         category: category
       };
-      product.pid = this.#getID();
+  
       const actualprods = await this.getProducts();
-
-      const filtro = actualprods.filter((prod) => prod.pid == product.pid);
-
-      if (filtro.length) {
-        console.log('Este producto de ID:', product.pid, 'ya existe');
-        return;
-      } else {
-        actualprods.push(product);
-        await fs.promises.writeFile(
-          this.#path,
-          JSON.stringify(actualprods)
-        );
+  
+      // Buscar el primer ID que no existe
+      let newId = 1;
+      while (actualprods.find((prod) => prod.id === newId)) {
+        newId++;
       }
+      product.id = newId;
+  
+      // Verificar si ya existe un producto con el mismo código
+      const existingProduct = actualprods.find((prod) => prod.code === code);
+  
+      if (existingProduct) {
+        console.log('Ya existe un producto con el código:', code);
+        return;
+      }
+  
+      actualprods.push(product);
+      await fs.promises.writeFile(this.#path, JSON.stringify(actualprods));
+      console.log("se creo el producto: ", product);
     } catch (error) {
       console.log('No se cargó ningún producto, algo salió mal:', error);
     }
   }
+  
 
   async getProducts() {
     try {
@@ -71,46 +79,44 @@ export default class ProductManager {
   async getProductById(id) {
     try {
       const actualprods = await this.getProducts();
-
+  
       if (actualprods.length == 0) {
         console.log(
           'No se puede filtrar ningún producto por su ID, el archivo aún está vacío'
         );
-        return;
+        return null;
       } else {
-        const filtro = actualprods.filter((prod) => prod.pid === id);
-
-        if (filtro.length > 0) {
-          console.log(
-            'Resultado de GetProductsBy ID: Producto filtrado por id:',
-            id,
-            filtro
-          );
+        const filtro = actualprods.find((prod) => prod.id === id);
+  
+        if (filtro) {
+          console.log('Resultado de GetProductsBy ID: Producto filtrado por id:', id);
+          console.log(filtro);
+          return filtro;
         } else {
-          console.log(
-            'Resultado de GetProductsBy ID: No existe ningún producto con este ID'
-          );
+          console.log('Resultado de GetProductsBy ID: No existe ningún producto con este ID');
+          return null;
         }
       }
     } catch (error) {
       console.log('Algo falló:', error);
+      return null;
     }
-  }
+  }  
 
-  async updateProduct(pid, updateFields) {
+  async updateProduct(id, updateFields) {
     try {
       const actualprods = await this.getProducts();
     
       if (actualprods.length === 0) {
-        console.log('No se puede actualizar nada, el archivo aún está vacío');
+        console.log('No se a podido actualizar, el archivo aún está vacío');
         return false;
       }
     
-      const productIndex = actualprods.findIndex((prod) => prod.pid === pid);
+      const productIndex = actualprods.findIndex((prod) => prod.id === id);
       console.log(productIndex);
     
       if (productIndex === -1) {
-        console.log("No se encontró ningún producto con el ID:", pid);
+        console.log("No se encontró producto con el ID:", id);
         return false;
       }
     
@@ -135,13 +141,13 @@ export default class ProductManager {
   async deleteProduct(id) {
     try {
       const actualprods = await this.getProducts();
-      const filteredProducts = actualprods.filter((prod) => prod.pid === id);
+      const filteredProducts = actualprods.filter((prod) => prod.id === id);
   
       if (filteredProducts.length === 0) {
         throw new Error(`El producto con ID ${id} no existe en la lista. No se puede eliminar.`);
       }
   
-      const updatedProducts = actualprods.filter((prod) => prod.pid !== id);
+      const updatedProducts = actualprods.filter((prod) => prod.id !== id);
       await fs.promises.writeFile('./products.json', JSON.stringify(updatedProducts));
       console.log(`Producto con ID ${id} eliminado correctamente.`);
     } catch (error) {

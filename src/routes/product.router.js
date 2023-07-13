@@ -32,8 +32,7 @@ router.get("/:pid", async (req, res) => {
     const pid = parseInt(req.params.pid);
     if(pid > 0 ){
         try{
-            const products = await pd.getProducts();
-            const product = products.find(u => u.id === pid);
+            const product = await pd.getProductById(pid)
             if(!product) return res.send("el porducto de id " + pid + " no existe")
             return res.send(product)
          } catch (error){
@@ -45,7 +44,6 @@ router.get("/:pid", async (req, res) => {
 })
 
 router.post("/", async (req, res) => {
-    
       const title = req.body.title;
       const description = req.body.description;
       const price = req.body.price;
@@ -63,7 +61,7 @@ router.post("/", async (req, res) => {
           res.send("se agrego un producto exitosamente")
         }
     } catch {
-        res.status(400).res("ocurrio un error")
+        res.status(400).send("ocurrio un error")
     }
 })
 
@@ -96,7 +94,7 @@ router.delete("/:pid", async (req, res) => {
   try {
     const actualProd = await pd.getProducts();
 
-    const updatedProducts = actualProd.filter((prod) => prod.pid !== piid);
+    const updatedProducts = actualProd.filter((prod) => prod.id !== piid);
 
     if (actualProd.length === updatedProducts.length + 1) {
       await pd.deleteProduct(piid);

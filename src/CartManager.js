@@ -96,8 +96,6 @@ export default class CartManager {
       
 
     async addCart(cid= undefined, pid = undefined, quantity = undefined) {
-        
-        
         try {
                 const product = {
                     pid: pid,
@@ -107,11 +105,13 @@ export default class CartManager {
                   const existingCart = actualCart.find((c) => c.cid === cid);
         
                   const products = await pd.getProducts();
-                  const actualProcut = products.find((p) => p.pid === pid)
+                  const actualProcut = products.find((p) => p.id === pid)
                   if(actualProcut){
               
                   if (existingCart) {
+                    console.log(existingCart.products);
                     const existingProduct = existingCart.products.find((p) => p.pid === pid);
+                    console.log(existingProduct);
               
                     if (existingProduct) {
                       existingProduct.quantity += quantity;
@@ -119,11 +119,7 @@ export default class CartManager {
                       existingCart.products.push(product);
                     }
                   } else {
-                    const newCart = {
-                      cid: await this.#getID(cid),
-                      products: [product]
-                    };
-                    actualCart.push(newCart);
+                    console.log("el carrito de ID: ", cid, " no existe");
                   }
               
                   await fs.promises.writeFile(this.#path, JSON.stringify(actualCart));
