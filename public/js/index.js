@@ -19,11 +19,12 @@ document.getElementById("form").onsubmit = e => {
         socket.emit("new-product", product)
         setTimeout(() => {
             document.getElementById("form").reset();
-        }, 1000);
+        }, 500);
     }
 }
 
 socket.on("product-added", products => {
+    
     let salida = `<table>
     <thead>
       <tr>
@@ -36,19 +37,20 @@ socket.on("product-added", products => {
     </thead>
     <tbody>`
     products.forEach(prod => {
-    salida +=
-        `<tr>
-            <td>${prod.title}</td>
-            <td>$ ${prod.price}</td>
-            <td>${prod.stock}</td>
-            <td>${prod.code}</td>
-            <td>${prod.id}</td>
-          </tr>
+        salida +=
+            `<tr>
+                <td>${prod.title}</td>
+                <td>$ ${prod.price}</td>
+                <td>${prod.stock}</td>
+                <td>${prod.code}</td>
+                <td>${prod.id}</td>
+            </tr>
           </tr>
        `
     });
     salida += ` </tbody>
             </table>`
-    document.getElementById("div").innerHTML = salida
+    
+    document.getElementById("div").innerHTML = salida;
 });
 

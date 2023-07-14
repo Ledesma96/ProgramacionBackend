@@ -33,4 +33,15 @@ table {
   .title{
     font-family: sans-serif;
   }
+
+  .card__container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card{
+    margin: 16px;
+  }
   

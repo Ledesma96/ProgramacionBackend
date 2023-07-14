@@ -33,7 +33,9 @@ const io = new Server(hhtpServer)
 io.on("connection", async socket => {
   socket.on("new-product", async ({ title, price, description, thumbnail, code, stock, category }) => {
     await pd.addProduct (title, description, price, thumbnail, code, stock, true, category );
+    
   })
   const products = await pd.getProducts();
-  io.emit("product-added", products);
+    io.emit("product-added", products);
+  
 })

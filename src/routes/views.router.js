@@ -6,7 +6,7 @@ const pd = new ProductManager();
 const router = Router();
 
 router.get("/", (req, res) => {
-    res.render("index", {})
+    res.render("home", {})
 })
 
 router.get("/products", async (req,res) => {
@@ -14,6 +14,8 @@ router.get("/products", async (req,res) => {
 
     res.render("realTimeProducts", {products})
 })
+
+
 
 router.post("/products", async (req,res) => {
     const title = req.body.title;
@@ -25,6 +27,6 @@ router.post("/products", async (req,res) => {
     const category = req.body.category;
     const result = await pd.addProduct(title, description, price, thumbnail, code, stock,true, category)
 })
-
+ 
 
 export default router
