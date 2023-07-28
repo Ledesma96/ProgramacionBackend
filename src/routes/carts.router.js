@@ -1,14 +1,18 @@
 import { Router } from "express";
-import CartManager from "../CartManager.js"
+// import CartManager from "../Dao/CartManager.js"
+import cartModel from "../Dao/models/cart.model.js";
+import productsModel from "../Dao/models/products.models.js";
 
-const cd = new CartManager()
+
+// const cd = new CartManager()
 
 const router = Router();
 
 router.get("/:cid", async (req, res) => {
-    const cid = parseInt(req.params.cid)
-    const carts = await cd.getCart()
-    const cart = await carts.find((c) => c.cid === cid)
+    const cid = req.params.cid
+    // const carts = await cd.getCart()
+    // const cart = await carts.find((c) => c.cid === cid)
+    const cart = await cartModel.findById(cid)
     try{
         if (cart){
             res.send(cart.products)
@@ -22,56 +26,66 @@ router.get("/:cid", async (req, res) => {
     
 })
 
-router.post("/:cid", async (req, res) => {
-    const cid = parseInt(req.params.cid);
-    if(cid > 0){
-        try {
-            await cd.createCart(cid);
-            res.send("Se creó el carrito con ID: " + cid);
-        } catch (error) {
-            console.error(error);
-            res.status(500).send("Ocurrió un error al crear el carrito");
-        }
-    } else {
-        res.status(404).send("ocurrio un error al crear el carrito de ID menor o igual a 0")
-    }
-    
-  });
-
 router.post("/", async (req, res) => {
     try{
-        const cid = parseInt(1);
-        await cd.crateeCart(cid)
+        // const cid = parseInt(1);
+        // await cd.crateeCart(cid)
+        new cartModel({products:[]}).save()
         res.send("se ah creado el carrito")
     } catch (e) {
         res.status(500).send("ocurrio un error al crear el carrito")
     }
-    
-    
 })
   
 
 
-router.post("/:cid/product/:pid", async (req, res) => {
-    const cid = parseInt(req.params.cid);
-    const pid = parseInt(req.params.pid); 
-    if(cid > 0){
-        const cart = await cd.getCart(cid);
-        if  (!cart) {
-            return res.status(404).send("No se encontró el carrito especificado");
-        } 
-        try {
-        await cd.addCart(cid, pid, 1);
-        res.send("Producto agregado al carrito correctamente");
-        } catch (error) {
-        res.status(500).send("Error al agregar el producto al carrito");
+router.post("/:cid/product/:pid/:quantity", async (req, res) => {
+    const cid = req.params.cid;
+    const pid = req.params.pid; 
+    const quantity = parseInt(req.params.quantity)
+
+    try{
+        let cart = await cartModel.findById(cid)
+        let productos = await productsModel.findById(pid)
+        
+
+        if(!cart){
+           cart = new cartModel({products:{pid,quantity}});
+           await cart.save();
         }
-    } else {
-        res.status(404).send("Imposible acceder a carritos de id menor o igual a 0")
+        if (productos){
+            const existProduct = cart.products.find(
+                (item) => item.pid === pid
+            )
+            if(existProduct){
+                existProduct.quantity += quantity
+                await cart.save()
+            } else {
+                cart.products.push({ pid, quantity });
+                await cart.save()
+            }
+            res.send("producto gaurdado con exito")
+        } else {
+            res.send("no existe el producto")
+        }
+    }catch (e) {
+        console.error("Error al guardar el producto:", e);
+        res.status(500).send("Error al guardar el producto en el carrito");
     }
-  
-    
-    
+    // if(cid > 0){
+    //     const cart = await cartModel.findById(cid)
+    //     if  (!cart) {
+    //         return res.status(404).send("No se encontró el carrito especificado");
+    //     } 
+    //     try {
+    //     await cartModel.updateOne(filter, updateData )
+    //     res.send("Producto agregado al carrito correctamente");
+    //     } catch (error) {
+    //     res.status(500).send("Error al agregar el producto al carrito");
+    //     }
+    // } else {
+    //     res.status(404).send("Imposible acceder a carritos de id menor o igual a 0")
+    // }
   });
   
 

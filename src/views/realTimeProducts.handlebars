@@ -1,20 +1,44 @@
 
 <h2 class="title">AGREGAR PRODUCTO</h2>
 
-<form id="form" action="" method="post">
+<form id="form" action="/products" method="POST">
     <input type="text" placeholder="title" name="title">
     <input type="text" placeholder="description" name="description">
-    <input type="numbre" placeholder="price" name="price">
+    <input type="number" placeholder="price" name="price">
     <input type="text" placeholder="thumbnail" name="thumbnail">
-    <input type="numbre" placeholder="code" name="code">
-    <input type="numbre" placeholder="stock" name="stock">
+    <input type="number" placeholder="code" name="code">
+    <input type="number" placeholder="stock" name="stock">
     <input type="text" placeholder="category" name="category">
     <input type="submit" value="cargar">
 </form>
 
 <h2 class="title">Productos</h2>
     
-<div id="div"></div>
+<div id="div">
+    <table>
+        <thead>
+            <tr>
+                <th class="text-center">NOMBRE</th>
+                <th class="text-center">PRICE</th>
+                <th class="text-center">STOCK</th>
+                <th class="text-center">CODE</th>
+                <th class="text-center">ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+            <tr>
+                <td>{{{this.title}}}</td>
+                <td>$ {{{this.price}}}</td>
+                <td>{{{this.stock}}}</td>
+                <td>{{{this.code}}}</td>
+                <td>{{{this._id}}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+
 
 
 
