@@ -73,3 +73,10 @@ color: white;
   margin:auto;
   width: 100%;
 }
+
+#category{
+  height: 30px;
+}
+.filter{
+  height: 30px;
+}

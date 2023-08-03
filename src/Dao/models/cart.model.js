@@ -4,7 +4,7 @@ const cartCollection = "cart"
 
 const cartSchema = new mongoose.Schema({
     products:[{
-        pid: String,
+        pid: {type: mongoose.Schema.Types.ObjectId, ref: "products"},
         quantity:Number
     }]
 })
