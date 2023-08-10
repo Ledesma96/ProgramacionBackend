@@ -3,14 +3,19 @@ import { Server, Socket } from "socket.io";
 import productRouter from "./routes/product.router.js";
 import cartRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js"
+import usersRouter from "./routes/users.router.js"
 import handlebars  from "express-handlebars";
 import mongoose from "mongoose";
 import productsModel from "./Dao/models/products.models.js";
 import __dirname from "./uitils.js";
 import messagesModel from "./Dao/models/messages.models.js";
+import MongoStore from "connect-mongo";
+import session from "express-session";
+
+
 // import ProductManager from "./Dao/models/products.models.js";
-
-
+//url mango db
+const url = "mongodb+srv://gabrielmledesma96:Lolalaloca1@cluster0.a4qufb6.mongodb.net/?retryWrites=true&w=majority"
 // const pd = new ProductManager()
 
 const app = express();
@@ -26,6 +31,31 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.json());
 app.use('/static', express.static('public'));
 
+app.use(session({
+  store: MongoStore.create({
+    mongoUrl: url,
+    dbName: "session",
+    mongoOptions:{
+      useNewUrlParser: true,
+      useUnifiedTopology:true
+    },  
+    ttl: 1000
+  }),
+  secret: "secret",
+  resave:false,
+  saveUninitialized:false
+}))
+
+app.use((req, res, next) => {
+  const user = req.session.user || null;
+  
+  if(user) {
+    res.locals.user = user.first_name
+    return next()
+  }
+  return next();
+});
+
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars")
@@ -33,8 +63,7 @@ app.set("view engine", "handlebars")
 app.use("/", viewsRouter)
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
-
-const url = "mongodb+srv://gabrielmledesma96:Lolalaloca1@cluster0.a4qufb6.mongodb.net/?retryWrites=true&w=majority"
+app.use("/api/sessions", usersRouter)
 
 mongoose.connect(url, {
   dbName: "ecommerce"

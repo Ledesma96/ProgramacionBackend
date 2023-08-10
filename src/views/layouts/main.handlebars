@@ -6,6 +6,7 @@
     <title>Document</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -40,9 +41,47 @@
       </div>
     </div>
   </div>
+  {{#if user}}
+    <div>
+      <img class="imgProfile" id="profileImage" width="40" src="https://cdn.icon-icons.com/icons2/2483/PNG/512/profile_menu_icon_149887.png" alt="">
+      <div id="profileDropdown">
+        <a href="/profile" class="profile">Perfil</a>
+        <button id="logoutButton" class="mt-2 logout">Cerrar sesión</button>
+      </div>
+    </div>
+    {{else}}
+      <li><a href="/login">Iniciar sesión</a></li>
+  {{/if}}
 </nav>
     {{{body}}}
     <script src="socket.io/socket.io.js"></script>
     <script src="/static/js/cart.js"></script>
+    <script>
+
+     const profileImage = document.getElementById('profileImage');
+const profileDropdown = document.getElementById('profileDropdown');
+
+profileImage.addEventListener('click', () => {
+  profileDropdown.classList.toggle('open');
+});
+
+
+const logoutButton = document.getElementById('logoutButton');
+logoutButton.addEventListener('click', async () => {
+  try {
+    const response = await fetch('/api/sessions/logout', {
+      method: 'DELETE',
+    });
+    if (response.ok) {
+      console.log("redirigiendo")
+      window.location.href = '/login';
+    } else {
+      console.error('Error al cerrar sesión');
+    }
+  } catch (error) {
+    console.error('Error al comunicarse con el servidor:', error);
+  }
+});
+    </script>
 </body>
 </html>

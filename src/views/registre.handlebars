@@ -1,0 +1,114 @@
+<form action="/api/sessions/registre" method="POST">
+    <input type="text" name="first_name" placeholder="nombre">
+    <input type="text" name="last_name" placeholder="apellido">
+    <input type="number" name="age" placeholder="edad">
+    <input type="text" name="email" placeholder="email">
+    <input type="text" name="password" placeholder="contraseña">
+    <input type="submit" value="enviar">
+</form>
+
+<section class="h-100 bg-dark">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col">
+        <div class="card card-registration my-4">
+          <div class="row g-0">
+            <div class="col-xl-6 d-none d-xl-block">
+              <img src="https://images.pexels.com/photos/11568809/pexels-photo-11568809.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Sample photo" class="img-fluid"
+                style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;" />
+            </div>
+            <div class="col-xl-6">
+              <div class="card-body p-md-5 text-black">
+                <h3 class="mb-5 text-uppercase">Formulario de registro</h3>
+                <form action="/api/sessions/registre">
+                <div class="row">
+                  <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                      <input id="firstName" type="text" class="form-control form-control-lg" name="first_name" />
+                      <label class="form-label" for="form3Example1m" >Nombre</label>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-4">
+                    <div class="form-outline">
+                      <input id="lastName" type="text" name="last_name" class="form-control form-control-lg" />
+                      <label class="form-label" for="form3Example1n">Apellido</label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input type="text" id="email" name="email" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example8">Email</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input id="age" type="text" name="age" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example9">Edad</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input id="password" type="text" name="password" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example90">Contraseña</label>
+                </div>
+
+                <div class="form-outline mb-4">
+                  <input id="repeatPassword" type="text" name="repeatPasword" class="form-control form-control-lg" />
+                  <label class="form-label" for="form3Example99">Repetir contraseña</label>
+                </div>
+
+                <div class="d-flex justify-content-end pt-3">
+                  <button type="button" class="btn btn-light btn-lg">Reset all</button>
+                  <button type="button" class="btn btn-warning btn-lg ms-2" onclick="registre()">Submit form</button>
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tu código HTML -->
+
+<script>
+    const registre = () => {
+        const password = document.getElementById("password").value;
+        const repeatPassword = document.getElementById("repeatPassword").value;
+        const first_name = document.getElementById("firstName").value;
+        const last_name = document.getElementById("lastName").value;
+        const age = document.getElementById("age").value;
+        const email = document.getElementById("email").value;
+        if(password === repeatPassword){
+            const data = {
+                password: password,
+                first_name: first_name,
+                last_name: last_name,
+                email: email,
+                age: age
+            }
+
+            fetch("/api/sessions/registre",{
+                method: "POST",
+                headers:{
+                    "content-type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if(response.ok){
+                    window.location.href = "/login"
+                } else {
+                    console.log("Ha ocurrido un error al crear el usuario")
+                }
+            })
+            .catch(error => {
+                console.log("Ha ocurrido un error inesperado", error)
+            })
+        } else {
+            console.log("las contraseñas deben coincidir")
+        }
+    }
+</script>

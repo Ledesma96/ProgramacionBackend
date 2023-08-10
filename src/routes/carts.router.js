@@ -11,10 +11,10 @@ const router = Router();
 
 router.get("/:cid", async (req, res) => {
     const cid = req.params.cid;
+    console.log(await cartModel.findOne({ _id: cid }));
   
     try {
       const cart = await cartModel.findOne({ _id: cid }).populate("products.pid");
-  
       if (cart) {
         res.send(cart);
       } else {
@@ -99,10 +99,8 @@ router.delete("/:cid/products/:pid", async(req, res) => {
          console.log(result);
          
         if (result.acknowledged > 0) {
-          console.log("Producto eliminado exitosamente");
           res.status(204).send("Producto eliminado exitosamente");
         } else {
-          console.log("Producto no encontrado en el carrito");
           res.status(404).send("Producto no encontrado en el carrito");
         }
 

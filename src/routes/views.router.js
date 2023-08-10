@@ -8,6 +8,40 @@ import cartModel from "../Dao/models/cart.model.js";
 
 const router = Router();
 
+
+//vistas de session
+function auth(req, res, next) {
+  if(req.session?.user) return res.redirect("/")
+
+  return next()
+  
+}
+function profile(req, res, next) {
+  if(req.session?.user) return next()
+  
+  return res.redirect("/login")
+}
+  //inicio de sesion
+router.get("/login", auth, (req,res) => {
+  res.render("login", {})
+})
+
+  //resgitro
+
+router.get("/registre", auth, (req,res) => {
+  res.render("registre")
+})
+
+  //profile
+
+router.get("/profile", profile, (req, res) => {
+  const user = req.session.user
+
+  res.render("profile", user)
+})
+
+
+
 //vista home
 
 router.get("/", async (req, res) => {
@@ -29,14 +63,21 @@ router.get("/", async (req, res) => {
     res.render("home", products)
 })
 
-router.get("/products", async (req,res) => {
+function accesAdmin(req, res, next) {
+  const user = req.session.user;
+  if(user.rol == "admin") return next()
+
+  return res.send("no tienes acceso a esta direccion")
+}
+
+router.get("/products",accesAdmin, async (req,res) => {
     const products = await productsModel.find().lean().exec()
 
     res.render("realTimeProducts", products)
 })
-
-
 //vista detail products
+
+
 router.get("/detail/:_id", async (req, res) => {
   const id = req.params._id;
 
