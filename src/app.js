@@ -109,11 +109,11 @@ mongoose.connect(url, {
         })
         //buscardor en tiempo real
         socket.on("text", async data => {
-          const searchItem = data.trim(); // Elimina espacios en blanco al inicio y al final
+          const searchItem = data.trim(); 
           if (searchItem === "") {
-            io.emit("search", []); // Envía un array vacío si el searchItem está vacío
+            io.emit("search", []); 
           } else {
-            const regex = new RegExp(`^${searchItem}`, "i"); // Usamos '^' para que coincida al principio del nombre
+            const regex = new RegExp(`^${searchItem}`, "i");
           
             try {
               const searchProduct = await productsModel.find({ title: regex }).lean().exec();
