@@ -1,15 +1,60 @@
-{{#each cart.products}}
-<div class="d-flex justify-content-center align-items-center">
-    <img class="ms-5 mt-5" width="50" src={{{pid.thumbnail}}} alt="">
-    <h2  class="ms-5 mt-5">{{{pid.title}}}</h2>
-    <h3 class="ms-5 mt-5">${{{pid.price}}}</h3>
-    <h5 class="ms-5 mt-5">{{{quantity}}}</h5>
-    <svg onclick="deleteProduct('{{{this._id}}}')" class="ms-5 mt-5"  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
-        <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
-    </svg>
-</div>
+<div class="card">
+    <div class="row">
+        <div class="col-md-8 cart">
+            <div class="title">
+                <div class="row">
+                    <div class="col"><h4><b>Carrito de compras</b></h4></div>
+                    <div class="col align-self-center text-right text-muted">3 items</div>
+                </div>
+            </div>
+            {{#each cart.products}}
+            <div class="row border-top border-bottom">
+                <div class="row main align-items-center">
+                    <div class="col-2">
+                        <img class="img-fluid" src={{{pid.thumbnail}}}>
+                    </div>
+                    <div class="col">
+                        <div class="row text-muted">{{{category}}}</div>
+                        <div class="row">{{{pid.title}}}</div>
+                    </div>
+                    <div class="col">
+                        <a href="#">-</a><a href="#" class="border">{{{quantity}}}</a><a href="#">+</a>
+                    </div>
+                    <div class="col">${{{pid.price}}} <span class="close">&#10005;</span></div>
+                    <div class="col">
+                        <svg onclick="deleteProduct('{{{this._id}}}')" class="ms-5 mt-5"  xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                        </svg>
+                    </div>
+                    </div>
+                </div>
+                {{/each}}
+                <div class="back-to-shop"><a href="#">&leftarrow;</a><span class="text-muted">Back to shop</span></div>
+            </div>
+            <div class="col-md-4 summary">
+                <div>
+                    <h5><b>Summary</b></h5>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col" style="padding-left:0;">ITEMS 3</div>
+                    <div class="col text-right">&euro; 132.00</div>
+                </div>
+                <form>
+                    <p>SHIPPING</p>
+                    <select><option class="text-muted">Standard-Delivery- &euro;5.00</option></select>
+                    <p>GIVE CODE</p>
+                    <input id="code" placeholder="Enter your code">
+                </form>
+                <div class="row" style="border-top: 1px solid rgba(0,0,0,.1); padding: 2vh 0;">
+                    <div class="col">TOTAL PRICE</div>
+                    <div class="col text-right">&euro; 137.00</div>
+                </div>
+                <button class="btn">CHECKOUT</button>
+            </div>
+        </div>        
+    </div>
 
-{{/each}}
 
 <script src="/static/js/cart.js"></script>

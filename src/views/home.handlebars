@@ -27,9 +27,11 @@
             {{else}}
             <p class="card-text">Sin stock</p>
             {{/if}}
+            <div class="diiv">
+                <a class="detalles" href="/detail/{{{this._id}}}" >Detalles</a>
+                <button id="addCart" onclick="addCart('{{{this._id}}}')"  class="addcart">Agregar al carrito</button>
+            </div>
             
-            <a href="/detail/{{{this._id}}}" class="btn btn-primary">Detalles</a>
-            <button id="addCart" onclick="addCart('{{{this._id}}}')"  class="btn btn-primary">Agregar al carrito</button>
         </div>
     </div>
 {{/each}}
@@ -60,4 +62,4 @@
 
 <script src="socket.io/socket.io.js"></script>
 <script src="/static/js/renderProducts.js"></script>
-<script src="/static/js/cart.js"></script>
+<script src="/static/js/cartCount.js"></script>

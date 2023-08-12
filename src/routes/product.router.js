@@ -1,5 +1,6 @@
 import { Router } from "express";
 import ProductManager from "../Dao/ProductManager.js";
+import productsModel from "../Dao/models/products.models.js";
 
 const pd = new ProductManager();
 
@@ -9,6 +10,28 @@ router.get("/", async (req, res) => {
   const limit = req.query.limit;
   try {
     const products = await pd.getProducts();
+
+    if (limit !== undefined) {
+      const parsedLimit = parseInt(limit);
+      if (!isNaN(parsedLimit)) {
+        if (parsedLimit <= products.length) {
+          return res.status(200).send(products.slice(0, parsedLimit));
+        }
+        return res.send("La cantidad de productos es: " + products.length);
+      }
+    }
+
+    return res.send(products);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error al obtener los productos");
+  }
+});
+
+router.get("/probando", async (req, res) => {
+  const limit = req.query.limit;
+  try {
+    const products = await productsModel.find();
 
     if (limit !== undefined) {
       const parsedLimit = parseInt(limit);

@@ -5,10 +5,6 @@ import usersModel from "../Dao/models/users.model.js";
 
 const router = Router();
 
-
-
-
-
 router.post("/login", async(req, res) => {
     const {email, password} = req.body;
 
@@ -51,7 +47,14 @@ router.delete("/logout", (req, res) => {
           console.log('Sesión cerrada exitosamente');
           res.send("ok")
         }
-      });
-  })
+    });
+})
+
+//ruta get para obtener el user en el javascript del front
+router.get('/user', (req, res) => {
+    const user = req.session.user;
+    res.json(user);
+});
+  
 
 export default router

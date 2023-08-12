@@ -27,9 +27,12 @@
           <a class="nav-link" href="/chat">Mensajes</a>
         </li>
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+      <form class="d-flex flex-column">
+        <div class="d-flex">
+          <input id="searchTerm" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button id="searchButton" class="btn btn-outline-success" type="submit">Search</button>
+        </div>
+        <div class="search" id="searchResults"></div>
       </form>
       <div class="m-3">
         <a href="/carts/64c2f98bc34641fcca5a229b">
@@ -54,34 +57,75 @@
   {{/if}}
 </nav>
     {{{body}}}
-    <script src="socket.io/socket.io.js"></script>
-    <script src="/static/js/cart.js"></script>
-    <script>
-
-     const profileImage = document.getElementById('profileImage');
-const profileDropdown = document.getElementById('profileDropdown');
-
-profileImage.addEventListener('click', () => {
-  profileDropdown.classList.toggle('open');
-});
-
-
-const logoutButton = document.getElementById('logoutButton');
-logoutButton.addEventListener('click', async () => {
-  try {
-    const response = await fetch('/api/sessions/logout', {
-      method: 'DELETE',
+  <script src="socket.io/socket.io.js"></script>
+  <script src="/static/js/cart.js"></script>
+  <script>
+    const socket = io()
+    //buscador
+    const text = document.getElementById("searchTerm");
+    let searchText = ""
+    text.addEventListener("keyup", (e) => {
+      if (e.key === "Backspace" || e.key === "Delete") {
+        searchText = searchText.slice(0, -1); // Elimina el último carácter
+      } else {
+        searchText += e.key;
+      }
+      socket.emit("text", searchText);
     });
-    if (response.ok) {
-      console.log("redirigiendo")
-      window.location.href = '/login';
+
+
+    socket.on("search", data => {
+      let salida = "";
+      console.log(data)
+      data.forEach(prod => {
+        salida += `
+       
+            <a class="d-flex mt-2 titleSearch mb-2" href="/detail/${prod._id}">
+              <img class="p-1 mt-2" width="40" src=${prod.thumbnail}/>
+              <h4 class="p-1 mt-2 ">${prod.title}</h4>
+            </a>
+          
+        `
+      })
+      document.getElementById("searchResults").innerHTML = salida;
+    })
+    // perfil de usuario
+    const profileImage = document.getElementById('profileImage');
+    const profileDropdown = document.getElementById('profileDropdown');
+    if(profileImage){
+      profileImage.addEventListener('click', () => {
+        profileDropdown.classList.toggle('open');
+      });
     } else {
-      console.error('Error al cerrar sesión');
+      console.log("no existe")
     }
-  } catch (error) {
-    console.error('Error al comunicarse con el servidor:', error);
-  }
-});
+    
+    //cerrar sesion
+   const logoutButton = document.getElementById('logoutButton');
+
+if (logoutButton) {
+  logoutButton.addEventListener('click', async () => {
+    try {
+      const response = await fetch('/api/sessions/logout', {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        console.log("redirigiendo");
+        window.location.href = '/login';
+      } else {
+        console.error('Error al cerrar sesión');
+      }
+    } catch (error) {
+      console.error('Error al comunicarse con el servidor:', error);
+    }
+  });
+} else {
+  console.log("no existe");
+}
+
+    
+    
     </script>
 </body>
 </html>

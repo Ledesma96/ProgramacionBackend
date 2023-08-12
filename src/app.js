@@ -79,7 +79,7 @@ mongoose.connect(url, {
       io.on("connection", async socket => {
 
         console.log("cliente conectado");
-
+        //carga de productos en tiempo real
         socket.on("new-product", async (product) => {
           const productCreated = new productsModel(product)
           await productCreated.save()
@@ -93,7 +93,7 @@ mongoose.connect(url, {
           const userCreated = new messagesModel(user)
           await userCreated.save()
         })
-
+        
         socket.on("message", async data => {
           const message = data.message;
           const user = data.user;
@@ -106,8 +106,25 @@ mongoose.connect(url, {
           } catch (error) {
             console.error("Error al agregar el mensaje al usuario:", error);
           }
-          
         })
+        //buscardor en tiempo real
+        socket.on("text", async data => {
+          const searchItem = data.trim(); // Elimina espacios en blanco al inicio y al final
+          if (searchItem === "") {
+            io.emit("search", []); // Envía un array vacío si el searchItem está vacío
+          } else {
+            const regex = new RegExp(`^${searchItem}`, "i"); // Usamos '^' para que coincida al principio del nombre
+          
+            try {
+              const searchProduct = await productsModel.find({ title: regex }).lean().exec();
+              console.log(searchProduct);
+              io.emit("search", searchProduct);
+            } catch (error) {
+              console.error("Error al buscar productos:", error);
+            }
+          }
+        });
+        
       })
     });
   })

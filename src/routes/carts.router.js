@@ -146,6 +146,23 @@ router.put("/:cid/products/:pid", async (req, res) => {
     }
 })
 
+router.put("/:cid", async (req, res) => {
+    const cid = req.params.cid
+    try {
+        const cart = await cartModel.findById(cid)
+
+        if(!cart) return res.send("Este carrito no existe")
+
+        cart.products = []
+        cart.save()
+
+        res.status(201).send("Carrito modificado exitosamente")
+        
+    } catch (error) {
+        res.status(401).send("Ha ocurrido un error al obtener el carrito")
+    }
+})
+
 
   
 

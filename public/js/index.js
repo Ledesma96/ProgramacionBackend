@@ -25,7 +25,6 @@ const socket = io();
  }
 
 socket.on("product-added", products => {
-    console.log(products);
     let salida = `<table>
     <thead>
       <tr>
