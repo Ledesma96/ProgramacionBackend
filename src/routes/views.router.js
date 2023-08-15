@@ -47,19 +47,21 @@ router.get("/profile", profile, (req, res) => {
 router.get("/", async (req, res) => {
   const limit = parseInt(req.query?.limit || 5);
   const page = parseInt(req.query?.page || 1);
+  const sort = parseInt(req.query?.sort || 1)
   const category = req.query?.category || null;
 
-  const filterCategory = category ? {category} : {};
+  const filterCategory = category ? { category } : {};
 
     const products = await productsModel.paginate(filterCategory, {
       page,
       limit,
+      sort:{price: sort},
       lean: true,
     })
-    products.nextLink = products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}` : "";
-    products.prevLink = products.hasPrevPage ? `/?page=${products.prevPage}&limit=${limit}` : "";
-    products.nextPagee = products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}` : "";
-    products.prevPagee = products.hasPrevPage ? `/?page=${products.prevPage}&limit=${limit}` : "";
+    products.nextLink = products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}&sort=${sort}` : "";
+    products.prevLink = products.hasPrevPage ? `/?page=${products.prevPage}&limit=${limit}&sort=${sort}` : "";
+    products.nextPagee = products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}&sort=${sort}` : "";
+    products.prevPagee = products.hasPrevPage ? `/?page=${products.prevPage}&limit=${limit}&sort=${sort}` : "";
     res.render("home", products)
 })
 

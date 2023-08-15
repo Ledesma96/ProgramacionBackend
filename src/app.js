@@ -11,6 +11,8 @@ import __dirname from "./uitils.js";
 import messagesModel from "./Dao/models/messages.models.js";
 import MongoStore from "connect-mongo";
 import session from "express-session";
+import initializePassport from "./config/passport.config.js";
+import passport from "passport";
 
 
 // import ProductManager from "./Dao/models/products.models.js";
@@ -34,7 +36,7 @@ app.use('/static', express.static('public'));
 app.use(session({
   store: MongoStore.create({
     mongoUrl: url,
-    dbName: "session",
+    dbName: "ecommerce",
     mongoOptions:{
       useNewUrlParser: true,
       useUnifiedTopology:true
@@ -45,7 +47,12 @@ app.use(session({
   resave:false,
   saveUninitialized:false
 }))
+//passport
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
+//middlewere de usuario
 app.use((req, res, next) => {
   const user = req.session.user || null;
   

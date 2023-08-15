@@ -1,43 +1,23 @@
 import { Router } from "express";
-import usersModel from "../Dao/models/users.model.js";
- 
+import passport from "passport";
 
 
 const router = Router();
 
-router.post("/login", async(req, res) => {
-    const {email, password} = req.body;
+router.post("/login", passport.authenticate("login", "/login"), async(req, res) => {
+    if(!req.user) return res.status(400).send("credenciales invaslidas")
+    req.session.user = req.user
 
-    try {
-        const user = await usersModel.findOne({email, password})
+    return res.redirect("/profile")
 
-        if(!user) return res.redirect("/login");
-
-        req.session.user = user;
-        return res.redirect("http://127.0.0.1:8080/")
-        
-    } catch (error) {
-        res.status(401).send("Ha ocurrido un error")
-    }
 })
-router.post("/registre", async(req, res) => {
-    const user = req.body;
 
-    try {
-        const existUser = await usersModel.findOne({email: req.body.email})
-        
-        if(!existUser){
-            const userCreated = new usersModel(user);
-            await userCreated.save()
-            res.status(201).send("Usuario creado con exito")
-            res.send("ok")
-        }
-        res.send("el usuario ya existe")
-        
-    } catch (error) {
-        res.status(401).send("Ha ocurrido un error al intentar crear un usuario")
-    }
+
+router.post("/register", passport.authenticate("register", {failureRedirect: "/register"}), 
+async(req, res) => {
+    res.send("ok")
 })
+
 
 router.delete("/logout", (req, res) => {
     req.session.destroy(err => {
@@ -55,6 +35,41 @@ router.get('/user', (req, res) => {
     const user = req.session.user;
     res.json(user);
 });
-  
+
+
+//github
+
+router.get(
+    '/login-github',
+    passport.authenticate('github', {scope: ['user:email'] }),
+    async(req, res) => {}
+  )
+  router.get(
+    '/githubcallback',
+    passport.authenticate('github', { failureRedirect: '/'}),
+    async(req, res) => {
+        req.session.user = req.user
+        console.log(req.session)
+        res.redirect('/profile')
+    }
+  )
+
+ //google
+ router.get(
+    '/login-google',
+    passport.authenticate('auth-google'),
+    async(req, res) => {}
+  )
+  router.get(
+    '/auth-google',
+    passport.authenticate('auth-google', { failureRedirect: '/'}),
+    async(req, res) => {
+        req.session.user = req.user
+        res.redirect('/profile')
+    }
+  )
+
+
+
 
 export default router

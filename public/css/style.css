@@ -119,6 +119,9 @@ color: white;
   }
 
 /* registre*/
+.img-registre{
+  width: 100%;
+}
   .card-registration .select-input.form-control[readonly]:not([disabled]) {
     font-size: 1rem;
     line-height: 2.15;
