@@ -52,6 +52,7 @@ const deleteProduct = (id) => {
   .then((response) => {
     if (response.status === 204) {
       console.log("Producto eliminado exitosamente");
+      window.location.href= `/carts/${cart}`
     } else {
       console.error("Error al eliminar el producto. Código de estado:", response.status);
     }
