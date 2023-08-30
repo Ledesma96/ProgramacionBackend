@@ -11,13 +11,13 @@ const router = Router();
 
 //vistas de session
 function auth(req, res, next) {
-  if(req.session?.user) return res.redirect("/")
+  if(req.user) return res.redirect("/")
 
   return next()
   
 }
 function profile(req, res, next) {
-  if(req.session?.user) return next()
+  if(req.user) return next()
   
   return res.redirect("/login")
 }
@@ -35,7 +35,7 @@ router.get("/registre", auth, (req,res) => {
   //profile
 
 router.get("/profile", profile, (req, res) => {
-  const user = req.session.user
+  const user = req.user
 
   res.render("profile", user)
 })
@@ -66,7 +66,7 @@ router.get("/", async (req, res) => {
 })
 
 function accesAdmin(req, res, next) {
-  const user = req.session.user;
+  const user = req.user;
   if(user.rol == "admin") return next()
 
   return res.send("no tienes acceso a esta direccion")
@@ -84,7 +84,6 @@ router.get("/detail/:_id", async (req, res) => {
   const id = req.params._id;
 
   const product = await productsModel.findById(id).lean().exec();
-  console.log(product);
 
   try {
     res.render("detail", product)
@@ -107,7 +106,7 @@ router.get("/carts/:cid", async(req, res) => {
 
   try {
     const cart = await cartModel.findOne({ _id: id }).populate("products.pid").lean().exec();
-    console.log(JSON.stringify(cart.products, null, "\t"));
+    
     if(!cart){
       res.send("el carrito no existe")
     } else {
@@ -146,12 +145,17 @@ router.post("/products", async (req,res) => {
 
 router.get("/cart/count", async (req, res) => {
   try {
-    const cartCount = await cartModel.findById("64c2f98bc34641fcca5a229b");
+    const id = req.user.cartId
+    const cartCount = await cartModel.findById(id);
     res.json({ count: cartCount.products.length });
   } catch (error) {
     console.error("Error al obtener el número de productos en el carrito:", error);
     res.status(500).json({ error: "Error al obtener el número de productos en el carrito" });
   }
 });
+
+router.get("/current", (req, res) => {
+  res.render("current", {})
+})
 
 export default router

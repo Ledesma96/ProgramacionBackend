@@ -9,10 +9,10 @@ import mongoose from "mongoose";
 import productsModel from "./Dao/models/products.models.js";
 import __dirname from "./uitils.js";
 import messagesModel from "./Dao/models/messages.models.js";
-import MongoStore from "connect-mongo";
 import session from "express-session";
 import initializePassport from "./config/passport.config.js";
 import passport from "passport";
+import cookieParser from "cookie-parser";
 
 
 // import ProductManager from "./Dao/models/products.models.js";
@@ -32,17 +32,9 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({extended: true}))
 app.use(express.json());
 app.use('/static', express.static('public'));
+app.use(cookieParser("secret"))
 
 app.use(session({
-  store: MongoStore.create({
-    mongoUrl: url,
-    dbName: "ecommerce",
-    mongoOptions:{
-      useNewUrlParser: true,
-      useUnifiedTopology:true
-    },  
-    ttl: 1000
-  }),
   secret: "secret",
   resave:false,
   saveUninitialized:false
@@ -53,15 +45,15 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 //middlewere de usuario
-app.use((req, res, next) => {
-  const user = req.session.user || null;
+ app.use((req, res, next) => {
+   const user = req.user || null;
   
-  if(user) {
-    res.locals.user = user.first_name
-    return next()
-  }
-  return next();
-});
+   if(user) {
+     res.locals.user = user.first_name
+     return next()
+   }
+   return next();
+ });
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");

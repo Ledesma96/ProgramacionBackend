@@ -11,7 +11,6 @@ const router = Router();
 
 router.get("/:cid", async (req, res) => {
     const cid = req.params.cid;
-    console.log(await cartModel.findOne({ _id: cid }));
   
     try {
       const cart = await cartModel.findOne({ _id: cid }).populate("products.pid");
@@ -96,7 +95,6 @@ router.delete("/:cid/products/:pid", async(req, res) => {
           { _id: cartId},
           { $pull: { products: { _id: productID } } }
         );
-         console.log(result);
          
         if (result.acknowledged > 0) {
           res.status(204).send("Producto eliminado exitosamente");

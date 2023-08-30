@@ -7,9 +7,9 @@ const pd = new ProductManager();
 const router = Router()
 
 router.get("/", async (req, res) => {
-  const limit = req.query.limit;
+  const limit = req.query?.limit || 4;
   try {
-    const products = await pd.getProducts();
+    const products = await productsModel.find();
 
     if (limit !== undefined) {
       const parsedLimit = parseInt(limit);
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
       }
     }
 
-    return res.send(products);
+    return res.status(200).send(products);
   } catch (error) {
     console.log(error);
     res.status(500).send("Error al obtener los productos");

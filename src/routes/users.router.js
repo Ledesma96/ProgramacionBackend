@@ -1,23 +1,42 @@
 import { Router } from "express";
 import passport from "passport";
+import { generateToken, authToken, passportCall, authorization } from "../uitils.js";
 
 
 const router = Router();
 
-router.post("/login", passport.authenticate("login", "/login"), async(req, res) => {
-    if(!req.user) return res.status(400).send("credenciales invaslidas")
-    req.session.user = req.user
+router.post("/login", passport.authenticate("login"), async(req, res) => {
+    if(!req.user) return res.status(400).send("credenciales invalidas")
+    const user = req.user;
+    const access_token = generateToken(user)
 
-    return res.redirect("/profile")
-
+    res.cookie("coderCookie", access_token, {
+      maxAge: 60*60*10000,
+      httpOnly: true
+    }).send({message: "Logueado"})
+    // res.send({status:"success", access_token})
 })
 
 
 router.post("/register", passport.authenticate("register", {failureRedirect: "/register"}), 
 async(req, res) => {
-    res.send("ok")
+  const user = req.body;
+  const access_token = generateToken(user)
+
+  res.cookie("coderCookie", access_token, {
+    maxAge: 60*60*10000,
+    httpOnly: true
+  }).send({message: "Logueado"})
+  // res.send({status:"success", access_token})
 })
 
+router.get("/current", passportCall("jwt",{ session:false}), authorization("usuario"), (req,res) => {
+  res.send({status: "success", payload: req.user })
+})
+
+router.get("/user", passportCall("jwt",{ session:false}), (req,res) => {
+  res.send(req.user)
+})
 
 router.delete("/logout", (req, res) => {
     req.session.destroy(err => {
@@ -48,9 +67,14 @@ router.get(
     '/githubcallback',
     passport.authenticate('github', { failureRedirect: '/'}),
     async(req, res) => {
-        req.session.user = req.user
-        console.log(req.session)
-        res.redirect('/profile')
+        const user = req.user
+        const access_token = generateToken(user)
+
+        res.cookie("coderCookie", access_token, {
+          maxAge: 60*60*10000,
+          httpOnly: true
+        }).redirect('/profile')
+        
     }
   )
 
@@ -64,8 +88,13 @@ router.get(
     '/auth-google',
     passport.authenticate('auth-google', { failureRedirect: '/'}),
     async(req, res) => {
-        req.session.user = req.user
-        res.redirect('/profile')
+      const user = req.user
+      const access_token = generateToken(user)
+
+      res.cookie("coderCookie", access_token, {
+        maxAge: 60*60*10000,
+        httpOnly: true
+      }).redirect('/profile')
     }
   )
 

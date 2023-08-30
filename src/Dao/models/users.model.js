@@ -10,6 +10,10 @@ const usersSchema = new mongoose.Schema({
     email: 
     { type: String,
     unique:true},
+    cartId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts"
+    },
     rol: {
         type: String,
         enum: ["admin", "usuario"],

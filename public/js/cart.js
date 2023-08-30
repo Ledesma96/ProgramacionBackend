@@ -1,6 +1,21 @@
 // agregar productos al carrito
+let cart = "";
+ 
+const obtendUser = async () => {
+ await fetch("http://127.0.0.1:8080/api/sessions/user")
+ 
+  .then(response => response.json())
+  .then(data => {
+    cart = data.user.cartId
+    console.log(cart);
+  })
+}
+obtendUser();
+
+
+
 const addCart = (id) => {
-  const cid = "64c2f98bc34641fcca5a229b";
+  const cid = cart;
   const pid = id;
   const requestOptions = {
     method: "POST",
@@ -13,7 +28,6 @@ const addCart = (id) => {
   fetch(`/api/carts/${cid}/product/${pid}`, requestOptions)
     .then((response) => response.json())
     .then((data) => {
-      
       console.log(data);
     })
     .catch((error) => {
@@ -25,7 +39,7 @@ const addCart = (id) => {
 
 //eliminar productos del carrito
 const deleteProduct = (id) => {
-  const cid = "64c2f98bc34641fcca5a229b";
+  const cid = cart;
   const pid = id;
   const requestOptions = {
     method: "DELETE",
@@ -46,7 +60,23 @@ const deleteProduct = (id) => {
   });
 }
 
-
+//vaciar carrito
+const clearCart = async () => {
+  const id = cart
+  const response = await fetch(`/api/carts/${id}`,{
+    method:"PUT",
+    headers:{"Content-Type": "application.json"}
+  }); 
+  try {
+    if(response.ok){
+      window.location.href= `/carts/${cart}`
+    } else {
+      console.log("Error al eliminar los productos");
+    }
+  } catch (error) {
+    console.log("Algo ha salido mal")
+  }
+}
 
 
   
