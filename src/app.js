@@ -46,8 +46,8 @@ app.use(passport.session())
 
 //middlewere de usuario
  app.use((req, res, next) => {
-   const user = req.user || null;
-  
+   const user = req.user? req.user : null;
+    console.log(req.user);
    if(user) {
      res.locals.user = user.first_name
      return next()

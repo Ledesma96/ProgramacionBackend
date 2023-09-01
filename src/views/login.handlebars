@@ -56,6 +56,7 @@
         });
         if (response.ok) {
             const data = await response.json();
+            window.location.href = "/"
         } else {
             console.log("Error al enviar los datos del usuario");
         }

@@ -44,6 +44,7 @@ router.delete("/logout", (req, res) => {
           console.error('Error al cerrar sesión:', err);
         } else {
           console.log('Sesión cerrada exitosamente');
+          res.clearCookie('coderCookie');
           res.send("ok")
         }
     });

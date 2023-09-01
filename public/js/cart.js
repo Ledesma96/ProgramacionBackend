@@ -6,12 +6,15 @@ const obtendUser = async () => {
  
   .then(response => response.json())
   .then(data => {
-    cart = data.user.cartId
-    console.log(cart);
+    if(data.user){
+      cart = data.user.cartId
+      console.log(cart);
+    } else {
+      console.log("Usuario no registrado")
+    }
   })
 }
-obtendUser();
-
+obtendUser()
 
 
 const addCart = (id) => {
