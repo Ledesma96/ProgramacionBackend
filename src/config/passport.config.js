@@ -6,6 +6,7 @@ import { createHash, generateToken, isValidPassword } from "../uitils.js";
 import GitHubStrategy from "passport-github2"
 import GoogleStrategy from "passport-google-oauth20"
 import jwt  from "passport-jwt";
+import 'dotenv/config.js';
 
 const LocalStrategy = local.Strategy;
 
@@ -26,7 +27,7 @@ const initializePassport = () => {
     passport.use("jwt",
     new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-        secretOrKey:"asdff48144as8f4f55a7s2d"
+        secretOrKey:process.env.SECRET_KEY
     },
         async (jwt_payload, done) => {
             try {
@@ -40,14 +41,15 @@ const initializePassport = () => {
 
     //passport con google
     passport.use("auth-google", new GoogleStrategy({
-        clientID: "517100169501-2kd998pqfhas6cg8php2ib931qakh9nd.apps.googleusercontent.com",
-        clientSecret: "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",
-        callbackURL: 'http://127.0.0.1:8080/api/sessions/auth-google',
+        clientID: process.env.CLIENT_ID_GOOGLE,
+        clientSecret: process.env.CLIENT_SECRET_GOOGLE,
+        callbackURL: process.env.CALLBACK_GOOGLE,
         scope: [ "profile", "email" ]
     }, 
     async(accessToken, refreshToken, profile,email, done) => {
         try {
             const user = await usersModel.findOne({email: email._json.email})
+            console.log("user: ", user);
             if(user) {
                 console.log("El usuario ya existe");
                 return done(null, user)
@@ -75,9 +77,9 @@ const initializePassport = () => {
     //passport con github
     passport.use("github", new GitHubStrategy(
         {
-            clientID:"Iv1.ea9bf9ecfee1d87e",
-            clientSecret: "6883ded6d451811eb675efe2071c6f267d68be20",
-            callbackURL: "http://127.0.0.1:8080/api/sessions/githubcallback"
+            clientID:process.env.CLIENT_ID_GITHUB,
+            clientSecret: process.env.CLIENT_SECRET_GITHUB,
+            callbackURL: process.env.CALLBACK_GITHUB
         },
         async(accessToken, refreshToken, profile, done) => {
             try {
@@ -134,7 +136,6 @@ const initializePassport = () => {
                 cartId: cartid,
                 password: createHash(password)
             }
-            console.log(newUser);
             const userCreated = new usersModel(newUser);
             await userCreated.save()
             return done(null, userCreated)

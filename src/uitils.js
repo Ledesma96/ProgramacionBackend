@@ -5,8 +5,9 @@ const __dirname = dirname(__filename)
 import bcrypt from "bcrypt"
 import jwt  from 'jsonwebtoken'
 import passport from 'passport'
+import 'dotenv/config.js';
 
-const PRIVATE_KEY = "asdff48144as8f4f55a7s2d"
+const PRIVATE_KEY = process.env.PRIVATE_KEY
 
 export const createHash = (password) => {
     const salt = bcrypt.genSaltSync(10);
@@ -56,6 +57,7 @@ export const passportCall = strategy => {
         }) (req, res, next)
     }
 }
+
 
 export const authorization = role => {
 

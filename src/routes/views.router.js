@@ -3,6 +3,7 @@ import { Router } from "express";
 import productsModel from "../Dao/models/products.models.js";
 import messageModel from "../Dao/models/messages.models.js"
 import cartModel from "../Dao/models/cart.model.js";
+import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister } from "../controllers/views.controller.js";
 
 // const pd = new ProductManager();
 
@@ -21,49 +22,19 @@ function profile(req, res, next) {
   
   return res.redirect("/login")
 }
+
+
   //inicio de sesion
-router.get("/login", auth, (req,res) => {
-  res.render("login", {})
-})
+router.get("/login", auth, renderLogin)
 
-  //resgitro
+//resgitro
+router.get("/registre", auth, renderRegister)
 
-router.get("/registre", auth, (req,res) => {
-  res.render("registre")
-})
-
-  //profile
-
-router.get("/profile", profile, (req, res) => {
-  const user = req.user
-
-  res.render("profile", user)
-})
-
-
+//profile
+router.get("/profile", profile, renderProfile)
 
 //vista home
-
-router.get("/", async (req, res) => {
-  const limit = parseInt(req.query?.limit || 5);
-  const page = parseInt(req.query?.page || 1);
-  const sort = parseInt(req.query?.sort || 1)
-  const category = req.query?.category || null;
-
-  const filterCategory = category ? { category } : {};
-
-    const products = await productsModel.paginate(filterCategory, {
-      page,
-      limit,
-      sort:{price: sort},
-      lean: true,
-    })
-    products.nextLink = products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}&sort=${sort}` : "";
-    products.prevLink = products.hasPrevPage ? `/?page=${products.prevPage}&limit=${limit}&sort=${sort}` : "";
-    products.nextPagee = products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}&sort=${sort}` : "";
-    products.prevPagee = products.hasPrevPage ? `/?page=${products.prevPage}&limit=${limit}&sort=${sort}` : "";
-    res.render("home", products)
-})
+router.get("/", getProductsViews)
 
 function accesAdmin(req, res, next) {
   const user = req.user;
@@ -80,17 +51,7 @@ router.get("/products",accesAdmin, async (req,res) => {
 //vista detail products
 
 
-router.get("/detail/:_id", async (req, res) => {
-  const id = req.params._id;
-
-  const product = await productsModel.findById(id).lean().exec();
-
-  try {
-    res.render("detail", product)
-  } catch (error) {
-    console.log("error al obtener el producto", error);   
-  }
-})
+router.get("/detail/:_id", renderDetailProduct)
 
 
 //cista chat
@@ -143,16 +104,16 @@ router.post("/products", async (req,res) => {
 })
 
 
-router.get("/cart/count", async (req, res) => {
-  try {
-    const id = req.user.cartId
-    const cartCount = await cartModel.findById(id);
-    res.json({ count: cartCount.products.length });
-  } catch (error) {
-    console.error("Error al obtener el número de productos en el carrito:", error);
-    res.status(500).json({ error: "Error al obtener el número de productos en el carrito" });
-  }
-});
+// router.get("/cart/count", async (req, res) => {
+//   try {
+//     const id = req.user.cartId
+//     const cartCount = await cartModel.findById(id);
+//     res.json({ count: cartCount.products.length });
+//   } catch (error) {
+//     console.error("Error al obtener el número de productos en el carrito:", error);
+//     res.status(500).json({ error: "Error al obtener el número de productos en el carrito" });
+//   }
+// });
 
 router.get("/current", (req, res) => {
   res.render("current", {})

@@ -13,11 +13,12 @@ import session from "express-session";
 import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import 'dotenv/config.js';
 
 
 // import ProductManager from "./Dao/models/products.models.js";
 //url mango db
-const url = "mongodb+srv://gabrielmledesma96:Lolalaloca1@cluster0.a4qufb6.mongodb.net/?retryWrites=true&w=majority"
+const url = ""
 // const pd = new ProductManager()
 
 const app = express();
@@ -47,7 +48,6 @@ app.use(passport.session())
 //middlewere de usuario
  app.use((req, res, next) => {
    const user = req.user? req.user : null;
-    console.log(req.user);
    if(user) {
      res.locals.user = user.first_name
      return next()
@@ -64,12 +64,12 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", usersRouter)
 
-mongoose.connect(url, {
+mongoose.connect(process.env.URL_MONGO, {
   dbName: "ecommerce"
 })
   .then(() => {
     console.log("DB connected!!");
-    const port = 8080;
+    const port = process.env.PORT || 8081;
     const hhtpServer = app.listen(port, () => {
       console.log(`Servidor escuchando en el puerto ${port}`);
 
@@ -116,7 +116,6 @@ mongoose.connect(url, {
           
             try {
               const searchProduct = await productsModel.find({ title: regex }).lean().exec();
-              console.log(searchProduct);
               io.emit("search", searchProduct);
             } catch (error) {
               console.error("Error al buscar productos:", error);

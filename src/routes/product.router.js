@@ -1,32 +1,12 @@
 import { Router } from "express";
 import ProductManager from "../Dao/ProductManager.js";
-import productsModel from "../Dao/models/products.models.js";
+import { getProducts } from "../controllers/products.controllers.js";
 
 const pd = new ProductManager();
 
 const router = Router()
 
-router.get("/", async (req, res) => {
-  const limit = req.query?.limit || 4;
-  try {
-    const products = await productsModel.find();
-
-    if (limit !== undefined) {
-      const parsedLimit = parseInt(limit);
-      if (!isNaN(parsedLimit)) {
-        if (parsedLimit <= products.length) {
-          return res.status(200).send(products.slice(0, parsedLimit));
-        }
-        return res.send("La cantidad de productos es: " + products.length);
-      }
-    }
-
-    return res.status(200).send(products);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send("Error al obtener los productos");
-  }
-});
+router.get("/", getProducts);
 
 
 router.get("/:pid", async (req, res) => {
@@ -57,7 +37,6 @@ router.post("/", async (req, res) => {
         if( title === undefined || description == undefined || price == undefined || code == undefined || stock == undefined || category == undefined){
           res.send("faltan campos obligatorios")
         } else {
-          console.log(req.body.description);
           await pd.addProduct(title, description, price, thumbnail, code, stock, category)
           res.send("se agrego un producto exitosamente")
         }

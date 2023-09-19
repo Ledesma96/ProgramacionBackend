@@ -1,4 +1,3 @@
-import { log } from "console";
 import fs from "fs"
 
 export default class ProductManager {
@@ -90,7 +89,6 @@ export default class ProductManager {
   
         if (filtro) {
           console.log('Resultado de GetProductsBy ID: Producto filtrado por id:', id);
-          console.log(filtro);
           return filtro;
         } else {
           console.log('Resultado de GetProductsBy ID: No existe ningún producto con este ID');
@@ -113,7 +111,6 @@ export default class ProductManager {
       }
     
       const productIndex = actualprods.findIndex((prod) => prod.id === id);
-      console.log(productIndex);
     
       if (productIndex === -1) {
         console.log("No se encontró producto con el ID:", id);

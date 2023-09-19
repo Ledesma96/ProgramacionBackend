@@ -78,7 +78,6 @@
 
     socket.on("search", data => {
       let salida = "";
-      console.log(data)
       data.forEach(prod => {
         salida += `
        
@@ -111,7 +110,7 @@ if (logoutButton) {
       const response = await fetch('/api/sessions/logout', {
         method: 'DELETE',
       });
-
+      console.log(response)
       if (response.ok) {
         console.log("redirigiendo");
         window.location.href = '/login';
