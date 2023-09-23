@@ -1,7 +1,7 @@
-import productsModel from "../Dao/models/products.models.js";
+import productsModel from "./models/products.models.js";
 
 class ViewsServices{
-    getProductsPaginate = async(limit,page, sort, category) => {
+    getProductsPaginate = async(limit, page, sort, category) => {
         const filterCategory = category ? { category } : {};
         try {
             const products = await productsModel.paginate(filterCategory, {
@@ -24,6 +24,11 @@ class ViewsServices{
     getProductDetail = async(id) => {
         const product = await productsModel.findById(id).lean().exec();
         return product
+    }
+
+    getAllProducts = async () => {
+        const products = await productsModel.find().lean().exec();
+        return products
     }
 }
 

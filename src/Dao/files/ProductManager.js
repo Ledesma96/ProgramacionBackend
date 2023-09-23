@@ -62,17 +62,44 @@ export default class ProductManager {
       console.log('No se cargó ningún producto, algo salió mal:', error);
     }
   }
+
+  getProductsAll = async () => {
+    const products = await this.getProducts();
+    return products;
+  }
   
 
-  async getProducts() {
+  async getProductsPaginate(page, limit, sort, category) {
     try {
-      const content = await fs.promises.readFile(this.#path, 'utf-8');
-      return JSON.parse(content);
+        const content = await fs.promises.readFile(this.#path, 'utf-8');
+        let products = JSON.parse(content);
+
+        // Filtrado por categoría si category no es null
+        if (category !== null) {
+            products = products.filter(product => product.category === category);
+        }
+
+        // Ordenamiento
+        if (sort === 1) {
+            products.sort((a, b) => a.price - b.price);
+        } else if (sort === -1) {
+            products.sort((a, b) => b.price - a.price);
+        }
+
+        // Calcular el índice inicial y final para la paginación
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+
+        // Obtener los productos de la página actual
+        const pagedProducts = products.slice(startIndex, endIndex);
+        return {docs: pagedProducts};
     } catch (error) {
-      console.log('Hubo un error al obtener los productos:', error);
-      throw error; // Re-lanzar el error para manejarlo en un nivel superior si es necesario
+        console.log('Hubo un error al obtener los productos:', error);
+        throw error;
     }
-  }
+}
+
+  
   
 
   async getProductById(id) {
@@ -132,8 +159,6 @@ export default class ProductManager {
       return false;
     }
   }
-  
-  
   
   async deleteProduct(id) {
     try {

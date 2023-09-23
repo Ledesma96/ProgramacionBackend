@@ -1,5 +1,8 @@
-import cartModel from "../Dao/models/cart.model.js"
-import productsModel from "../Dao/models/products.models.js"
+import cartModel from "./models/cart.model.js"
+import productsModel from "./models/products.models.js"
+import TicketServices from "./ticket.services.js"
+
+const ticketService = new TicketServices()
 
 class CartServices {
     constructor(){
@@ -15,9 +18,9 @@ class CartServices {
         return cart
     }
 
-    createCArt = async() => {
+    createCart = async(cart) => {
         try {
-            const newCart = await new cartModel({products:[]}).save();
+            const newCart = await new cartModel(cart).save();
             if(newCart){
                 console.log("carrito creado exitosamente", newCart);
                 return {success:true, message:"Carrito creado con exito"}
@@ -114,6 +117,53 @@ class CartServices {
             return({success: true , message:"Carrito modificado exitosamente"})
         } catch (error) {
             throw error
+        }
+    }
+
+    cartPurchase = async (cid, email) => {
+        try {
+            const cart = await cartModel.findById(cid).populate("products.pid");
+            const products = await productsModel.find();
+            const purchase = [];
+            if(!cart) return ({success: false, message: "El carrito no existe"})
+            for (let i = 0; i < cart.products.length; i++) {
+                let productInCart = cart.products[i];
+                for (let j = 0; j < products.length; j++) {
+                    const element = products[j];
+                    if(productInCart.pid._id.toString() === element._id.toString()){
+                        if(element.stock == productInCart.quantity){
+                            purchase.push(element.price * productInCart.quantity)
+                            cart.products[i].splice(i, 1)
+                            await cart.save()
+                            products[j].stock = 0
+                            await products[j].save()
+                        } else if (element.stock < productInCart.quantity) {
+                            purchase.push(element.price * element.stock)
+                            cart.products[i].quantity -= element.stock
+                            await cart.save()
+                            products[j].stock = 0
+                            await products[j].save()
+                        }  else {
+                            element.stock -= productInCart.quantity
+                            purchase.push(element.price * productInCart.quantity)
+                            cart.products.splice(i, 1)
+                            await cart.save()
+                            products[j].stock -= productInCart.quantity
+                            products.save()
+                        }                      
+                    }
+                }
+            }
+            const total = purchase.reduce((total, init) => total + init, 0)
+            const ticket = {
+                amount: total,
+                purchaser: "hola@gmail.com"
+            }
+            const newTicket = await ticketService.createTickets(ticket)
+            newTicket.save()
+            return {success: true, message: "Compra realizada con exito"}
+        } catch (error) {
+            return { success: false, message: error.message }
         }
     }
 }

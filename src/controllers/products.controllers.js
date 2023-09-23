@@ -1,6 +1,7 @@
-import ProductServices from "../services/product.services.js";
+import { Products } from "../Dao/factory.js";
+import ProductsDTO from "../Dao/DTO/products.dto.js";
 
-const prductServices = new ProductServices()
+const prductServices = new Products()
 
 export const getProducts = async(req, res) => {
     const limit = req.query?.limit || 4;
@@ -12,6 +13,72 @@ export const getProducts = async(req, res) => {
             res.status(400).json({message: products.message})
         }  
     } catch (error) {
-        res.status(500).json({message: "Ocurrio un error inesperado"})
+        res.status(500).json({message: "Ocurrio un error inesperado", error: error})
+    }
+}
+
+export const getProductById = async(req, res) => {
+    const id = req.params.pid
+    const product = await prductServices.getProductById(id)
+    try {
+        if(product){
+            res.status(201).send(product)
+        } else {
+            res.status(400).json("Ocurrio un error, parece que el producto no existe")
+        }  
+    } catch (error) {
+        res.status(500).json({message: "Ocurrio un error inesperado", error: error.message})
+    }
+}
+
+export const createProduct = async(req, res) => {
+    const product = {
+        title: req.body.title,
+        description: req.body.description,
+        price: req.body.price,
+        thumbnail: req.body.thumbnail,
+        code: req.body.code,
+        stock: req.body.stock,
+        category: req.body.category
+    };
+
+    const DTO = new ProductsDTO(product);
+    const newProduct = await prductServices.addProducts(DTO)
+    try {
+        if(newProduct){
+            res.status(201).send(newProduct)
+        } else {
+            res.status(400).json({message: newProduct.message})
+        }  
+    } catch (error) {
+        res.status(500).json({message: "Ocurrio un error inesperado", error: error})
+    }
+}
+
+export const deleteProduct = async(req, res) => {
+    const id = req.params.pid
+    const product = await prductServices.deleteProduct(id)
+    try {
+        if(product){
+            res.status(201).send(product)
+        } else {
+            res.status(400).json({message: product.message})
+        }  
+    } catch (error) {
+        res.status(500).json({message: "Ocurrio un error inesperado", error: error})
+    }
+}
+
+export const updateProduct = async(req, res) => {
+    const id = req.params.pid
+    const product = await prductServices.updateProduct(id, req.body)
+    try {
+        if(product){
+            res.status(201).send(product)
+        } else {
+            res.status(400).json({message: product.message})
+        }  
+    } catch (error) {
+        res.status(500).json({message: "Ocurrio un error inesperado", error: error})
     }
 }

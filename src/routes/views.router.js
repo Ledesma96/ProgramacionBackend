@@ -1,22 +1,18 @@
 import { Router } from "express";
-// import ProductManager from "../Dao/ProductManager.js";
-import productsModel from "../Dao/models/products.models.js";
-import messageModel from "../Dao/models/messages.models.js"
-import cartModel from "../Dao/models/cart.model.js";
-import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister } from "../controllers/views.controller.js";
-
-// const pd = new ProductManager();
+import productsModel from "../Dao/mongo/models/products.models.js";
+import messageModel from "../Dao/mongo/models/messages.models.js"
+import cartModel from "../Dao/mongo/models/cart.model.js";
+import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll } from "../controllers/views.controller.js";
 
 const router = Router();
-
 
 //vistas de session
 function auth(req, res, next) {
   if(req.user) return res.redirect("/")
-
   return next()
-  
 }
+
+// perfil de usuario
 function profile(req, res, next) {
   if(req.user) return next()
   
@@ -36,28 +32,32 @@ router.get("/profile", profile, renderProfile)
 //vista home
 router.get("/", getProductsViews)
 
+
+//real time prodcuts
 function accesAdmin(req, res, next) {
   const user = req.user;
+
   if(user.rol == "admin") return next()
 
   return res.send("no tienes acceso a esta direccion")
 }
+router.get("/products",accesAdmin, getProductsAll)
 
-router.get("/products",accesAdmin, async (req,res) => {
-    const products = await productsModel.find().lean().exec()
 
-    res.render("realTimeProducts", products)
-})
+
 //vista detail products
-
-
 router.get("/detail/:_id", renderDetailProduct)
 
 
-//cista chat
-router.get("/chat", async (req, res) => {
-  const messages = await messageModel.find().lean().exec()
+function accesAUser(req, res, next) {
+const user = req.user;
+  if(user.rol == "user") return next()
 
+  return res.send("no tienes acceso a esta direccion")
+}
+//cista chat
+router.get("/chat",accesAUser, async (req, res) => {
+  const messages = await messageModel.find().lean().exec()
   res.render("chat", {messages})
 })
 
@@ -82,17 +82,7 @@ router.get("/carts/:cid", async(req, res) => {
 
 //agregar un producto meidante un form
 router.post("/products", async (req,res) => {
-    // const title = req.body.title;
-    // const description = req.body.description;
-    // const price = parseInt(req.body.price);
-    // const thumbnail = req.body.thumbnail;
-    // const code = parseInt(req.body.code);
-    // const stock = parseInt(req.body.stock);
-    // const category = req.body.category;
-    // const result = await pd.addProduct(title, description, price, thumbnail, code, stock,true, category)
-
     const productNew = req.body;
-
     try {
         const productCreated = new productsModel(productNew);
         await productCreated.save();
@@ -102,18 +92,6 @@ router.post("/products", async (req,res) => {
         res.redirect('/error');
       }
 })
-
-
-// router.get("/cart/count", async (req, res) => {
-//   try {
-//     const id = req.user.cartId
-//     const cartCount = await cartModel.findById(id);
-//     res.json({ count: cartCount.products.length });
-//   } catch (error) {
-//     console.error("Error al obtener el número de productos en el carrito:", error);
-//     res.status(500).json({ error: "Error al obtener el número de productos en el carrito" });
-//   }
-// });
 
 router.get("/current", (req, res) => {
   res.render("current", {})

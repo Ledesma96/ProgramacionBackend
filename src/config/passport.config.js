@@ -1,7 +1,7 @@
 import passport from "passport";
 import local from "passport-local"
-import usersModel from "../Dao/models/users.model.js";
-import cartModel from "../Dao/models/cart.model.js"
+import usersModel from "../Dao/mongo/models/users.model.js";
+import cartModel from "../Dao/mongo/models/cart.model.js"
 import { createHash, generateToken, isValidPassword } from "../uitils.js";
 import GitHubStrategy from "passport-github2"
 import GoogleStrategy from "passport-google-oauth20"

@@ -15,7 +15,7 @@ export default class CartManager {
     }
 
     
-    async getCart() {
+    async getCarts() {
         try {
             const content = await fs.promises.readFile(this.#path, "utf-8");
             return JSON.parse(content);
@@ -37,7 +37,7 @@ export default class CartManager {
       
       
 
-    async crateeCart(cid = undefined){
+    async crateCart(cid = undefined){
         try{
             const actualCart = await this.getCart();
             const existingCart = actualCart.find((c) => c.cid === cid)

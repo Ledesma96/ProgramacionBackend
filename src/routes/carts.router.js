@@ -1,6 +1,5 @@
 import { Router } from "express";
-import { CreateNewCart, add, deleteCartCompleted, deleteProduct, emptyCart, getCart, getCarts, updateOne } from "../controllers/carts.controllers.js";
-
+import { CreateNewCart, add, deleteCartCompleted, cartPurchase, deleteProduct, emptyCart, getCart, getCarts, updateOne } from "../controllers/carts.controllers.js";
 const router = Router();
 
 router.get("/", getCarts)
@@ -11,6 +10,7 @@ router.delete("/:cid/products/:pid", deleteProduct)
 router.delete("/:cid",deleteCartCompleted)
 router.put("/:cid/products/:pid", updateOne)
 router.put("/:cid", emptyCart)
+router.post("/:cid", cartPurchase)
 
 export default router;
 

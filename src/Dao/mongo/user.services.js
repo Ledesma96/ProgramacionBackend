@@ -1,5 +1,5 @@
-import usersModel from "../Dao/models/users.model.js";
-import { generateToken } from "../uitils.js";
+import usersModel from "./models/users.model.js";
+import { generateToken } from "../../uitils.js";
 
 class UserServices {
     constructor(){
@@ -26,7 +26,6 @@ class UserServices {
     }
 
     LogOut = async(session) => {
-        console.log(session);
         session.destroy(err => {
             if (err) {
                 return ({secces:false, message:"Error al cerrar sesión", err})

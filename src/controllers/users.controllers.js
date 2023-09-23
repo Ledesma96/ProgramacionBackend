@@ -1,4 +1,4 @@
-import UserServices from "../services/user.services.js";
+import UserServices from "../Dao/mongo/user.services.js";
 
 const userServices = new UserServices()
 

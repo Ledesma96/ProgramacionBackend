@@ -1,8 +1,5 @@
-import ViewsServices from "../services/views.services.js";
-
-const viewsServices = new ViewsServices()
-
-
+import { View } from "../Dao/factory.js";
+const viewsServices = await new View
 
 export const getProductsViews = async(req, res) => {
     const limit = parseInt(req.query?.limit || 5);
@@ -17,8 +14,18 @@ export const getProductsViews = async(req, res) => {
             res.status(400).json({message: "Error al obtener los products"})
         }
     } catch (error) {
-        res.status(500).json({message: "Ocurrio un error inesperado"})
+        res.status(500).json({message: "Ocurrio un error inesperado", error: error.message})
     }
+}
+
+export const getProductsAll= async(req, res) => {
+    try {
+        const products = await viewsServices.getAllProducts();
+        res.status(200).render("realTimeProducts", products)
+        } catch (error) {
+        res.status(500).json({message: "Ocurrio un error inesperado: ", error: error.message})
+    }
+
 }
 
 export const renderLogin = (req, res) => {
