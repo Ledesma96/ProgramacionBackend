@@ -57,6 +57,15 @@ export const passportCall = strategy => {
         }) (req, res, next)
     }
 }
+export const passportCall1 = strategy => {
+    return async(req, res, next) => {
+        passport.authenticate(strategy, function(err, user, info){
+            if(err) return next(err)
+            req.user = user;
+            next()
+        }) (req, res, next)
+    }
+}
 
 
 export const authorization = role => {

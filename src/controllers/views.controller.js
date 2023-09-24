@@ -11,8 +11,8 @@ export const getProductsViews = async(req, res) => {
         const products = await viewsServices.getProductsPaginate(limit, page, sort, category)
         if(products){
             res.status(201).render("home", {
-                products: products,
-                user: user
+            products: products,
+            user: user
         })
         } else {
             res.status(400).json({message: "Error al obtener los products"})

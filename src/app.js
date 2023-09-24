@@ -47,18 +47,16 @@ app.use(passport.session())
 //middlewere de usuario
 app.use((req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
-      if (err) {
-          return next();
-      }
-      if (user) {
-        
-          const user = req.user.user? req.user.user : null
-          res.locals.user = user;
-          
-      }
-      return next();
+    if (err) {
+      return next(err);
+    }
+    const authenticatedUser = user ? req.user.user : null;
+    res.locals.user = authenticatedUser;
+    next(); // Continuar independientemente de si se encontró un usuario o no
   })(req, res, next);
 });
+
+
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");

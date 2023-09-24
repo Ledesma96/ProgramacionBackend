@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { passportCall } from "../uitils.js";
+import { passportCall, passportCall1 } from "../uitils.js";
 import productsModel from "../Dao/mongo/models/products.models.js";
 import messageModel from "../Dao/mongo/models/messages.models.js"
 import cartModel from "../Dao/mongo/models/cart.model.js";
@@ -31,7 +31,7 @@ router.get("/registre", auth, renderRegister)
 router.get("/profile", profile, renderProfile)
 
 //vista home
-router.get("/",  passportCall("jwt",{ session:false}),getProductsViews)
+router.get("/",  passportCall1("jwt",{ session:false}),getProductsViews)
 
 
 //real time prodcuts
