@@ -11,7 +11,6 @@ class ProductServices{
         let products = await productsModel.find();
         return products
       } catch (error) {
-        console.log(error);
        return {message: "Error al obtener los productos"}
       }
     }
@@ -31,7 +30,6 @@ class ProductServices{
             }
             return products
           } catch (error) {
-            console.log(error);
            return {message: "Error al obtener los productos"}
           }
     }
@@ -71,7 +69,6 @@ class ProductServices{
     };
 
     updateProduct = async (id, updateData) => {
-      console.log(updateData);
       try {
         const newID = new mongoose.Types.ObjectId(id)
         const updateResponse = await productsModel.updateOne(

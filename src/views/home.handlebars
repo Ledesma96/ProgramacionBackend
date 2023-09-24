@@ -3,7 +3,7 @@
     
 </div> --}}
 {{#if user}}
-<h1>bienvenido {{user}}</h1>
+<h1>bienvenido {{user.first_name}}</h1>
 {{/if}}
 <label class="pt-5 ms-5" for="bebidas">categoria:</label>
     <select id="category" name="category">
@@ -21,7 +21,7 @@
     <button class="filter" onclick="filter()">Filtrar</button>
     <a href="/">Limpiar</a>
 <div class="d-flex flex-wrap ms-4">
-{{#each docs}}
+{{#each products.docs}}
     <div class="card card__container" style="width: 18rem;">
         <img height="300" src={{this.thumbnail}} class="card-img-top" alt="...">
         <div class="card-body">
@@ -34,9 +34,9 @@
             {{/if}}
             <div class="diiv">
                 <a class="detalles" href="/detail/{{{this._id}}}" >Detalles</a>
-                <button id="addCart" onclick="addCart('{{{this._id}}}')"  class="addcart">Agregar al carrito</button>
+                <button id="addCart" onclick="addCart('{{../user.cartId}}','{{this._id}}')" class="addcart">Agregar al carrito</button>
+
             </div>
-            
         </div>
     </div>
 {{/each}}
@@ -60,13 +60,6 @@
     {{/if}}
     
 </div>
-
-
-
-<script>
-        console.log("Mensaje en la consola del navegador", JSON.stringify({{docs}}));
-    </script>
-
 <script src="socket.io/socket.io.js"></script>
 <script src="/static/js/renderProducts.js"></script>
-<script src="/static/js/cartCount.js"></script>
+<script src="/static/js/cart.js"></script>

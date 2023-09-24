@@ -29,7 +29,7 @@ export const CreateNewCart = async(req, res) => {
       if(cart){
         res.send("Carrito creado exitosamente")
       } else {
-        console.log("Ah ocurrido un error");
+        res.send("Ah ocurrido un error");
       }
   } catch (error) {
       res.status(404).send("Ha ocurrido un error: " + error.message);
@@ -111,7 +111,7 @@ export const emptyCart = async (req, res) => {
 
 export const cartPurchase = async (req, res) => {
   const cid = req.params.cid;
-  const email = req.body.email;
+  const email = req.query.purchaser;
   try {
       await cartService.cartPurchase(cid, email);
       res.status(200).send({succes: true, message: "ticket creado con exito"})

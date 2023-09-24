@@ -18,23 +18,25 @@ class UserServices {
     RegisterUser = async(user) => {
         try {
             const access_token = generateToken(user);
-            console.log(access_token);
             return access_token;
         } catch (error) {
             throw error;
         }
     }
 
-    LogOut = async(session) => {
-        session.destroy(err => {
+    LogOut = (session) => {
+        return new Promise((resolve, reject) => {
+          session.destroy((err) => {
             if (err) {
-                return ({secces:false, message:"Error al cerrar sesión", err})
+              console.error('Error al cerrar sesión:', err);
+              reject({ success: false, message: 'Error al cerrar sesión', error: err });
             } else {
-              console.log('Sesión cerrada exitosamente');
-              return ({success: true, message:"Sesion cerrada con exito"})
+              resolve({ success: true, message: 'Sesión cerrada con éxito' });
             }
+          });
         });
-    }
+      };
+      
 }
 
 export default UserServices

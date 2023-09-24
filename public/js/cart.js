@@ -1,49 +1,29 @@
-// agregar productos al carrito
-let cart = "";
- 
-const obtendUser = async () => {
- await fetch("http://127.0.0.1:8080/api/sessions/user")
- 
-  .then(response => response.json())
-  .then(data => {
-    if(data.user){
-      cart = data.user.cartId
-      console.log(cart);
+const addCart = async (cid, pid) => {
+  try {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ quantity: 1 }),
+    };
+    const response = await fetch(`/api/carts/${cid}/product/${pid}`, requestOptions)
+
+    if (response.status === 201) {
+      console.log("Producto agregado al carrito");
     } else {
-      console.log("Usuario no registrado")
+      console.error("Error al agregar al carrito. Código de estado:", response.status);
     }
-  })
-}
-obtendUser()
-
-
-const addCart = (id) => {
-  const cid = cart;
-  const pid = id;
-  const requestOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ quantity: 1 }),
-  };
-
-  fetch(`/api/carts/${cid}/product/${pid}`, requestOptions)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      
-      console.error("Error al agregar el producto al carrito:", error);
-    });
+  } catch (error) {
+    console.error("Error al agregar al carrito, error:", error);
+  }
 };
 
 
 //eliminar productos del carrito
-const deleteProduct = (id) => {
-  const cid = cart;
+const deleteProduct = (cart, id) => {
   const pid = id;
+  const cid = cart;
   const requestOptions = {
     method: "DELETE",
     headers: {
@@ -82,5 +62,21 @@ const clearCart = async () => {
   }
 }
 
-
-  
+const purchase = async (cid, purchaser) => {
+  try {
+    const response = await fetch(`/api/carts/${cid}/purchase?purchaser=${purchaser}`,{
+      method:"POST",
+      headers:{"Content-Type": "application.json"},
+      body: JSON.stringify({
+        purchaser: purchaser
+      })
+    })
+    if(response.ok){
+      window.location.href= `/carts/${cid}`
+    } else {
+      console.log("Error al realizar la compra");
+    }
+  } catch (error){
+    console.log("Ah ocurrido un error inesperado");
+  }
+};

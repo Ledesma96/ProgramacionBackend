@@ -23,7 +23,6 @@ class Ticket{
     }
 
     createTickets = async (ticket) => {
-        console.log(ticket);
         const tickets = await this.getTickets();
         const codeOne = tickets.length
         const nextCode = codeOne? codeOne + 1 : 1

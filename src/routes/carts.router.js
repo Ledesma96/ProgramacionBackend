@@ -10,7 +10,7 @@ router.delete("/:cid/products/:pid", deleteProduct)
 router.delete("/:cid",deleteCartCompleted)
 router.put("/:cid/products/:pid", updateOne)
 router.put("/:cid", emptyCart)
-router.post("/:cid", cartPurchase)
+router.post("/:cid/purchase", cartPurchase)
 
 export default router;
 

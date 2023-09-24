@@ -6,10 +6,14 @@ export const getProductsViews = async(req, res) => {
     const page = parseInt(req.query?.page || 1);
     const sort = parseInt(req.query?.sort || 1)
     const category = req.query?.category || null;
+    const user = req.user.user
     try {
         const products = await viewsServices.getProductsPaginate(limit, page, sort, category)
         if(products){
-            res.status(201).render("home", products)
+            res.status(201).render("home", {
+                products: products,
+                user: user
+        })
         } else {
             res.status(400).json({message: "Error al obtener los products"})
         }

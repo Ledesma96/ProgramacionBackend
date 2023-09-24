@@ -34,7 +34,6 @@ export const logout = async (req, res) => {
     try {
         const session = req.session
         const end = await userServices.LogOut(session);
-        console.log(end);
         if(end.success){
             res.clearCookie('coderCookie');
             res.status(201).json(end.message)

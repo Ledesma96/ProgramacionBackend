@@ -45,14 +45,20 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 //middlewere de usuario
- app.use((req, res, next) => {
-   const user = req.user? req.user : null;
-   if(user) {
-     res.locals.user = user.first_name
-     return next()
-   }
-   return next();
- });
+app.use((req, res, next) => {
+  passport.authenticate('jwt', { session: false }, (err, user) => {
+      if (err) {
+          return next();
+      }
+      if (user) {
+        
+          const user = req.user.user? req.user.user : null
+          res.locals.user = user;
+          
+      }
+      return next();
+  })(req, res, next);
+});
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");

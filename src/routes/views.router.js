@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { passportCall } from "../uitils.js";
 import productsModel from "../Dao/mongo/models/products.models.js";
 import messageModel from "../Dao/mongo/models/messages.models.js"
 import cartModel from "../Dao/mongo/models/cart.model.js";
@@ -30,7 +31,7 @@ router.get("/registre", auth, renderRegister)
 router.get("/profile", profile, renderProfile)
 
 //vista home
-router.get("/", getProductsViews)
+router.get("/",  passportCall("jwt",{ session:false}),getProductsViews)
 
 
 //real time prodcuts
@@ -62,8 +63,10 @@ router.get("/chat",accesAUser, async (req, res) => {
 })
 
 //vista de carts
-router.get("/carts/:cid", async(req, res) => {
+router.get("/carts/:cid",passportCall("jwt",{ session:false}), async(req, res) => {
   const id = req.params.cid;
+  const user = req.user.user
+  
 
   try {
     const cart = await cartModel.findOne({ _id: id }).populate("products.pid").lean().exec();
@@ -71,7 +74,10 @@ router.get("/carts/:cid", async(req, res) => {
     if(!cart){
       res.send("el carrito no existe")
     } else {
-      res.render("cart", {cart})
+      res.render("cart", {
+        cart: cart,
+        user: user
+      })
     }
     
   } catch (error) {

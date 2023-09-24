@@ -8,7 +8,6 @@ const router = Router();
 
 router.post("/login", passport.authenticate("login"), login)
 
-
 router.post("/register", passport.authenticate("register", {failureRedirect: "/register"}), register)
 
 router.get("/current", passportCall("jwt",{ session:false}), authorization("usuario"), (req,res) => {

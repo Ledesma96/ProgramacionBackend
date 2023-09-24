@@ -22,10 +22,8 @@ class CartServices {
         try {
             const newCart = await new cartModel(cart).save();
             if(newCart){
-                console.log("carrito creado exitosamente", newCart);
                 return {success:true, message:"Carrito creado con exito"}
             } else {
-                console.log("ocurrio un error al crear un carrito");
                 return {success: false, message: "No se pudo crear el carrito"}
             }
         } catch (error) {
@@ -66,8 +64,8 @@ class CartServices {
             const result = await cartModel.updateOne(
               { _id: cid},
               { $pull: { products: { pid: pid} } }
-            );
-             console.log(result);
+              );
+              console.log(result);
             if (result.acknowledged) {
                 return { success: true, message: "Producto eliminado exitosamente" }
             } else {
@@ -157,7 +155,7 @@ class CartServices {
             const total = purchase.reduce((total, init) => total + init, 0)
             const ticket = {
                 amount: total,
-                purchaser: "hola@gmail.com"
+                purchaser: email
             }
             const newTicket = await ticketService.createTickets(ticket)
             newTicket.save()
