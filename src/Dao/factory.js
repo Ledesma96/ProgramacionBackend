@@ -9,7 +9,6 @@ export let Ticket
 
 switch (config.persistence) {
     case "MEMORY" :
-      
         const {default: ViewMemory } = await import("./memory/view.memory.js");
         const {default: ProductsMemory } = await import("./memory/products.memory.js");
         const {default: CartsMemory} = await import("./memory/cart.memory.js");
@@ -19,11 +18,13 @@ switch (config.persistence) {
         break;
 
     case "FILE" :
-        const {default: ProductsFile } = await import("./files/productManager.js");
-        const {default: CartsFile} = await import("./files/cartManager.js");
+        const {default: ProductsFile } = await import("./files/ProductManager.js");
+        const {default: CartsFile} = await import("./files/CartManager.js");
+        const {default: TicketFile } = await import("./files/TicketManager.js")
         console.log("connected to file");
         Products = ProductsFile
         Carts = CartsFile
+        Ticket = TicketFile
         break;
 
     case "MONGODB" :{

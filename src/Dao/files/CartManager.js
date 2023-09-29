@@ -1,5 +1,6 @@
 import fs from "fs";
 import ProductManager from "./ProductManager.js";
+import TicketsManager from "./TicketManager.js";
 
 const pd = new ProductManager();
 
@@ -32,9 +33,6 @@ export default class CartManager {
         }
         return newCid;
       }
-      
-      
-      
       
 
     async crateCart(cid = undefined){
@@ -91,6 +89,16 @@ export default class CartManager {
         }
         
       }
+
+      async getFilterCart(cid){
+        try {
+            const carts = await this.getCart();
+            const filterCart = carts.filter((c) => c.id === cid);
+            return filterCart;
+        } catch (error) {
+            return {success: false, message: error.messagge}
+        }
+      }
       
     
       
@@ -130,4 +138,55 @@ export default class CartManager {
           console.log("No se pudo agregar el producto al carrito", error);
         }
       } 
+
+    async cartPurchase(cid, email) {
+        try {
+            
+            const cart = await this.getFilterCart(cid);
+            const products = await pd.getProductsAll()
+            const purchase = []
+    
+            if(!cart) return {success: false, message: "No se encontro el carrito"}
+    
+            for (let i = 0; i < cart.products.length; i++) {
+                let actualProduct = cart.products[i]
+    
+                for (let j = 0; j < products.length; j++) {
+                    const product = products[j];
+    
+                    if(actualProduct.pid.toString() == product.id.toString()) {
+                        if(product.stock === actualProduct.quantity){
+                            purchase.push(product.price * actualProduct.quantity)
+                            product.stock -= actualProduct.quantity
+                            cart.products.splice(i, 1)
+                            await fs.promises.writeFile(this.#path, JSON.stringify(cart));
+                            await fs.promises.writeFile('./products.json', JSON.stringify(products));
+                        } else if (product.stock < actualProduct.quantity){
+                            purchase.push(product.stock * product.price)
+                            product.stock = 0;
+                            actualProduct.quantity -= product.stock;
+                            await fs.promises.writeFile(this.#path, JSON.stringify(cart));
+                            await fs.promises.writeFile('./products.json', JSON.stringify(products));
+                        } else {
+                            purchase.push(product.price * actualProduct.quantity)
+                            product.stock -= actualProduct.quantity
+                            cart.products.splice(i, 1)
+                            await fs.promises.writeFile(this.#path, JSON.stringify(cart));
+                            await fs.promises.writeFile('./products.json', JSON.stringify(products));
+                        }
+                    }
+                }
+            }
+            const total = purchase.reduce((total, init) => total + init, 0);
+            const ticket = {
+                amount : total,
+                purchaser: email
+            }
+            const newTicket = await new TicketsManager.createTickets(ticket)
+            await fs.promises.writeFile('./tickets.json', JSON.stringify(newTicket));
+            return { success: true, message : "Ticket creado con exito"}
+        } catch (error) {
+            return { success: false, message: error.message }
+        }
+    }
 }
