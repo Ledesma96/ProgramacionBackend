@@ -30,6 +30,8 @@ class ViewsServices{
         const products = await productsModel.find().lean().exec();
         return products
     }
+
+    
 }
 
 export default ViewsServices

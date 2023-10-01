@@ -1,3 +1,6 @@
+import CustomError from "../../services/error/custom_error.js";
+import EErrors from "../../services/error/enums.js";
+import { ErrorGetProductById } from "../../services/error/info.js";
 import productsModel from "./models/products.models.js";
 import mongoose from "mongoose";
 
@@ -37,9 +40,16 @@ class ProductServices{
     getProductById = async(id) => {
       try {
         const product = await productsModel.findById(id)
-        if (product){
-          return product
+        console.log(product);
+        if (!product){
+          return CustomError.createError({
+            name: "getProductById",
+            cause: ErrorGetProductById(id),
+            message: "Product not found",
+            code: EErrors.NOT_ACCEPTABLE_ERROR
+          })
         }
+        return product
       } catch (error) {
         return {success: false, message: error.message}
       }

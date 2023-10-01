@@ -3,7 +3,9 @@ import { passportCall, passportCall1 } from "../uitils.js";
 import productsModel from "../Dao/mongo/models/products.models.js";
 import messageModel from "../Dao/mongo/models/messages.models.js"
 import cartModel from "../Dao/mongo/models/cart.model.js";
-import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll } from "../controllers/views.controller.js";
+import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll, mokingProducts } from "../controllers/views.controller.js";
+import CustomError from "../services/error/custom_error.js";
+import EErrors from "../services/error/enums.js";
 
 const router = Router();
 
@@ -33,6 +35,9 @@ router.get("/profile", profile, renderProfile)
 //vista home
 router.get("/",  passportCall1("jwt",{ session:false}),getProductsViews)
 
+//moking products
+router.get("/mokingproducts", mokingProducts)
+
 
 //real time prodcuts
 function accesAdmin(req, res, next) {
@@ -59,6 +64,15 @@ const user = req.user;
 //cista chat
 router.get("/chat",accesAUser, async (req, res) => {
   const messages = await messageModel.find().lean().exec()
+  const user = req.user;
+  if(user.rol != "user"){
+    return CustomError.createError({
+      name: "Restriccion de admin",
+      cause,
+      message:"Permitido para usuarios",
+      code: EErrors.NOT_AUTHORIZED_ERROR
+    })
+  }
   res.render("chat", {messages})
 })
 
@@ -66,11 +80,8 @@ router.get("/chat",accesAUser, async (req, res) => {
 router.get("/carts/:cid",passportCall("jwt",{ session:false}), async(req, res) => {
   const id = req.params.cid;
   const user = req.user.user
-  
-
   try {
     const cart = await cartModel.findOne({ _id: id }).populate("products.pid").lean().exec();
-    
     if(!cart){
       res.send("el carrito no existe")
     } else {

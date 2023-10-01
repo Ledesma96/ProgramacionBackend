@@ -13,6 +13,7 @@ import session from "express-session";
 import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import cookieParser from "cookie-parser";
+import handleError from "./middlewere/error.js"
 import 'dotenv/config.js';
 
 
@@ -67,6 +68,7 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", usersRouter)
 app.use("/api/tickets", ticketsRouter);
+app.use(handleError)
 
 const port = process.env.PORT || 8081;
 const hhtpServer = app.listen(port, () => {
