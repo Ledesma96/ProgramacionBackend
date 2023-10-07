@@ -12,6 +12,7 @@ export const login = async (req, res) => {
             httpOnly: true
           }).send({message: "Logueado"})
     } catch (error) {
+        logger.error('An error occurred' + error.message)
         res.status(500).send("Error en la autenticación: " + error.message);
     }
 }
@@ -26,7 +27,8 @@ export const register = async (req, res) => {
           httpOnly: true
         }).send({message: "Logueado"})
     } catch (error) {
-        
+        logger.error('An error occurred' + error.message)
+        res.status(500).send("Error en la autenticación: " + error.message)
     }
 }
 
@@ -41,6 +43,7 @@ export const logout = async (req, res) => {
             res.status(401).json(end.message)
         }
     } catch (error) {
+        logger.error('An error occurred' + error.message)
         res.status(500).json(error.error)
     }
 }

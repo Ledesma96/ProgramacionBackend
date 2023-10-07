@@ -6,6 +6,7 @@ import cartModel from "../Dao/mongo/models/cart.model.js";
 import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll, mokingProducts } from "../controllers/views.controller.js";
 import CustomError from "../services/error/custom_error.js";
 import EErrors from "../services/error/enums.js";
+import compression from "express-compression";
 
 const router = Router();
 
@@ -36,7 +37,12 @@ router.get("/profile", profile, renderProfile)
 router.get("/",  passportCall1("jwt",{ session:false}),getProductsViews)
 
 //moking products
-router.get("/mokingproducts", mokingProducts)
+router.get("/mokingproducts", 
+compression({
+  brotli:{
+    enabled: true,
+    zlib:{}
+  }}), mokingProducts)
 
 
 //real time prodcuts

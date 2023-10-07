@@ -11,6 +11,7 @@ export const createTicket = async (req, res) => {
         await TicketService.createTickets(ticket);
         res.status(200).send({succes: true, message: "ticket creado con exito"})
     } catch (error) {
+        logger.error('An error occurred' + error.message)
         res.status(404).send({succes: false, message: error.message})
     }
 }

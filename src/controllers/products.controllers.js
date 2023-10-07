@@ -13,6 +13,7 @@ export const getProducts = async(req, res) => {
             res.status(400).json({message: products.message})
         }  
     } catch (error) {
+        logger.error('An error occurred' + error.message)
         res.status(500).json({message: "Ocurrio un error inesperado", error: error})
     }
 }
@@ -27,6 +28,7 @@ export const getProductById = async(req, res) => {
             res.status(400).json("Ocurrio un error, parece que el producto no existe")
         }  
     } catch (error) {
+        logger.error('An error occurred' + error.message)
         res.status(500).json({message: "Ocurrio un error inesperado", error: error.message})
     }
 }
@@ -51,6 +53,7 @@ export const createProduct = async(req, res) => {
             res.status(400).json({message: newProduct.message})
         }  
     } catch (error) {
+        logger.error('An error occurred' + error.message)
         res.status(500).json({message: "Ocurrio un error inesperado", error: error})
     }
 }
@@ -65,6 +68,7 @@ export const deleteProduct = async(req, res) => {
             res.status(400).json({message: product.message})
         }  
     } catch (error) {
+        logger.error('An error occurred' + error.message)
         res.status(500).json({message: "Ocurrio un error inesperado", error: error})
     }
 }
@@ -79,6 +83,7 @@ export const updateProduct = async(req, res) => {
             res.status(400).json({message: product.message})
         }  
     } catch (error) {
+        logger.error('An error occurred' + error.message)
         res.status(500).json({message: "Ocurrio un error inesperado", error: error})
     }
 }

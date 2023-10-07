@@ -15,6 +15,7 @@ import passport from "passport";
 import cookieParser from "cookie-parser";
 import handleError from "./middlewere/error.js"
 import 'dotenv/config.js';
+import { addLoger } from "./config/logger.js";
 
 
 // import ProductManager from "./Dao/models/products.models.js";
@@ -34,6 +35,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.json());
 app.use('/static', express.static('public'));
 app.use(cookieParser("secret"))
+app.use(addLoger)
 
 app.use(session({
   secret: "secret",
@@ -72,7 +74,7 @@ app.use(handleError)
 
 const port = process.env.PORT || 8081;
 const hhtpServer = app.listen(port, () => {
-  console.log(`Servidor escuchando en el puerto ${port}`);
+console.log(`Servidor escuchando en el puerto ${port}`);
 
   const io = new Server(hhtpServer)
 

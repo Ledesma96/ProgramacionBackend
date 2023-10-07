@@ -408,3 +408,40 @@ a:hover{
   background-position-x: 95%;
   background-position-y: center;
 }
+
+.containerCard{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.divCard{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 300px;
+  height: 450px;
+  border-radius: 10px;
+  border: #000 solid 0.5px;
+  margin: 15px;
+  overflow: hidden;
+}
+.divCard__img{
+  width: 100%;
+}
+.divCard__name{
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.divCard__price{
+  color: #0d6efd;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.divCard__description{
+  width: 90%;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+}
