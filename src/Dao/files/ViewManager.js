@@ -1,12 +1,13 @@
-import Products from "./products.memory.js"
-const ProductsMemory = new Products()
-export default class Productsview {
+import Products from "./ProductManager.js";
+const ProductsManager = new Products()
+export default class View {
     constructor() {
     }
+
     getProductsPaginate = async (limit, page, sort, category) =>{
         try {
-            const products = await ProductsMemory.getProducts()
-           
+            console.log(limit);
+            const products = await ProductsManager.getProducts()
     
             // Filtrado por categoría si category no es null
             if (category !== null) {
@@ -33,12 +34,15 @@ export default class Productsview {
         }
     }
 
-    getProdutcsAll = async() => {
-        return this.products;
+    getProdutcsAll = async () => {
+        const products = await ProductsManager.getProductsAll();
+        return  products
     }
 
-    getProductDetail = async (id) => {
-        const product = this.products.find((product) => product.id === id);
-        return product;
-    }    
+    getProductDetail= async (id) => {
+        const products = await ProductsManager.getProductsAll();
+        const product = products.find((prod) => prod.id === id)
+        return product
+    }
+
 }

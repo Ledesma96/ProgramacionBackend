@@ -3,3 +3,34 @@ warning: Cart not found, invalid id: 651c163435e1c7edc961504e
 warning: Cart not found, invalid id: 651c163435e1c7edc961504e
 error: An error occurredfaker is not defined
 error: An error occurred faker is not defined
+error: An error occurredProductsManager.getProducts is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredCast to ObjectId failed for value "650e216663f7ab57e73f718g" (type string) at path "_id" for model "products"
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts?.sort is not a function
+error: An error occurredproducts?.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function
+error: An error occurredproducts.sort is not a function

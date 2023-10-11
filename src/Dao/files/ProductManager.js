@@ -11,6 +11,18 @@ export default class ProductManager {
     this.#path = './products.json';
   }
 
+
+  async getProducts() {
+    try {
+      const content = await fs.promises.readFile(this.#path, 'utf-8');
+      return JSON.parse(content);
+    } catch (error) {
+      console.error('Hubo un error al obtener los productos:', error);
+      throw error;
+    }
+  }
+
+  
   #getID() {
     this.#id++;
     return this.#id;

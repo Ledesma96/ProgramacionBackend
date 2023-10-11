@@ -12,19 +12,23 @@ switch (config.persistence) {
         const {default: ViewMemory } = await import("./memory/view.memory.js");
         const {default: ProductsMemory } = await import("./memory/products.memory.js");
         const {default: CartsMemory} = await import("./memory/cart.memory.js");
+        const {default: TicketMemory} = await import('./memory/ticket.memory.js')
         Products = ProductsMemory;
         Carts = CartsMemory;
         View = ViewMemory;
+        Ticket = TicketMemory;
         break;
 
     case "FILE" :
         const {default: ProductsFile } = await import("./files/ProductManager.js");
         const {default: CartsFile} = await import("./files/CartManager.js");
         const {default: TicketFile } = await import("./files/TicketManager.js")
+        const {default: ViewFile} = await import("./files/ViewManager.js")
         console.log("connected to file");
         Products = ProductsFile
         Carts = CartsFile
         Ticket = TicketFile
+        View = ViewFile
         break;
 
     case "MONGODB" :{

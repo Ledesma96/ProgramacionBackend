@@ -63,7 +63,7 @@ router.get("/detail/:_id", renderDetailProduct)
 
 function accesAUser(req, res, next) {
 const user = req.user;
-  if(user.rol == "user") return next()
+  if(user.rol == "usuario") return next()
 
   return res.send("no tienes acceso a esta direccion")
 }
@@ -71,7 +71,7 @@ const user = req.user;
 router.get("/chat",accesAUser, async (req, res) => {
   const messages = await messageModel.find().lean().exec()
   const user = req.user;
-  if(user.rol != "user"){
+  if(user.rol != "usuario"){
     return CustomError.createError({
       name: "Restriccion de admin",
       cause,

@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-export class TicketsManager {
+export default class TicketsManager {
     constructor(){
         if (!fs.existsSync("./tickets.json")){
             fs.writeFileSync("./tickets.json", JSON.stringify([]));

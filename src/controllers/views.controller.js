@@ -6,7 +6,7 @@ import { logger } from "../config/logger.js";
 import { faker } from '@faker-js/faker';
 
 
-const viewsServices = await new View
+const viewsServices = await new View()
 
 export const getProductsViews = async(req, res) => {
     const limit = parseInt(req.query?.limit || 5);
