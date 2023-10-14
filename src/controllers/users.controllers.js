@@ -1,6 +1,5 @@
-import UserServices from "../Dao/mongo/user.services.js";
+import {userServices} from "../services/index.js";
 
-const userServices = new UserServices()
 
 export const login = async (req, res) => {
     try {
@@ -45,5 +44,26 @@ export const logout = async (req, res) => {
     } catch (error) {
         logger.error('An error occurred' + error.message)
         res.status(500).json(error.error)
+    }
+}
+
+export const sendMail = async (req, res) => {
+    try {
+        const email = req.body.email
+        const response = userServices.sendMail(email)
+        res.status(200).send({success: true, message: await response.message})
+    } catch (error) {
+        res.status(500).send({success: false, message: error.message})
+    }
+}
+
+export const newPassword = async (req, res) => {
+    try {
+        const pass = req.body.password;
+        const mail = req.body.email
+        const response = userServices.NewPassword(mail, pass)
+        res.status(200).send({success: true, message: await response.message})
+    } catch (error) {
+        res.status(500).send({success:false, messagge: error.message})
     }
 }

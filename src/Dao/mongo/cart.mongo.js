@@ -1,6 +1,6 @@
 import cartModel from "./models/cart.model.js"
-import productsModel from "./models/products.models.js"
-import TicketServices from "./ticket.services.js"
+import productsModel from "./models/products.model.js"
+import TicketServices from "./ticket.mongo.js"
 
 const ticketService = new TicketServices()
 

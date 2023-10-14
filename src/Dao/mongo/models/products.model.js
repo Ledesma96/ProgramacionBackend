@@ -12,6 +12,7 @@ const productsSchema = new mongoose.Schema({
     description: String,
     status:Boolean,
     category: String,
+    owner: {type: String, default: 'admin'},
 })
 
 productsSchema.plugin(mongoosePaginate)

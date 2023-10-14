@@ -1,8 +1,11 @@
 import usersModel from "./models/users.model.js";
-import { generateToken } from "../../uitils.js";
+import { createHash, generateToken } from "../../uitils.js";
 import CustomError from "../../services/error/custom_error.js";
 import { generateUserErrorInfo } from "../../services/error/info.js";
 import EErrors from "../../services/error/enums.js"
+import jwt from "jsonwebtoken";
+import 'dotenv/config.js';
+import nodemailer from "nodemailer";
 
 class UserServices {
     constructor(){
@@ -47,6 +50,50 @@ class UserServices {
           });
         });
       };
+
+      
+
+    sendMail = async(email) => {
+      const transport =  nodemailer.createTransport({
+        service: 'gmail',
+        port:587,
+        auth:{
+          user:'mailingprueba61@gmail.com',
+          pass:'bgrroqifncmvzxzk'
+        }
+      
+      })
+      const token = jwt.sign({email}, process.env.PRIVATE_KEY,{expiresIn: "1h"})
+      const result = await transport.sendMail({
+        from :'mailingprueba61@gmail.com',
+        to: email,
+        subject: 'Reset password',
+        html:`<div>
+                <p> Has click en el siguiente enlace para restablecer tu contraseña</p>
+                <a href='http://127.0.0.1:8080/reset-password?token=${token}'>Restablecer password</a>
+              </div>`
+      })
+
+      return ({succes: true, message: 'Proceso exitoso'})
+    }
+
+    NewPassword = async(mail, pass) => {
+      console.log(mail, pass)
+      try {
+        const user = await usersModel.findOne({ email: mail});
+
+        if (!user) return { success: false, message: 'Usuario no encontrado' }
+
+        if(user.password === pass) return { success: false, message: 'No puedes usar el mismo password' };
+
+        user.password = createHash(pass);
+        await user.save()
+        return ({ success: true, message: 'Password actualizado con exito'})
+      } catch (error) {
+        return ({succes: false, message: error.message})
+      }
+
+    }
       
 }
 

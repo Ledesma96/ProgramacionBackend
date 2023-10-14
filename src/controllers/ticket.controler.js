@@ -1,6 +1,6 @@
-import { Ticket } from "../Dao/factory.js";
+import { ticketServices } from "../services/index.js"
 
-const TicketService = new Ticket()
+
 
 export const createTicket = async (req, res) => {
     const ticket = {
@@ -8,7 +8,7 @@ export const createTicket = async (req, res) => {
         purchaser: req.body.purchaser
     }
     try {
-        await TicketService.createTickets(ticket);
+        await ticketServices.createTickets(ticket);
         res.status(200).send({succes: true, message: "ticket creado con exito"})
     } catch (error) {
         logger.error('An error occurred' + error.message)

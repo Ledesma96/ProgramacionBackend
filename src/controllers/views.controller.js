@@ -1,12 +1,10 @@
-import { View } from "../Dao/factory.js";
+import { viewsServices } from "../services/index.js";
 import CustomError from "../services/error/custom_error.js";
 import EErrors from "../services/error/enums.js";
 import { ErrorGetProductById, ErrorGetProducts } from "../services/error/info.js";
 import { logger } from "../config/logger.js";
 import { faker } from '@faker-js/faker';
 
-
-const viewsServices = await new View()
 
 export const getProductsViews = async(req, res) => {
     const limit = parseInt(req.query?.limit || 5);
@@ -44,7 +42,7 @@ export const getProductsAll= async(req, res) => {
                   })
             }
         }
-        res.status(200).render("realTimeProducts", products)
+        res.status(200).render("realTimeProducts", {products:products, email: req.user.email})
         } catch (error) {
             logger.error('An error occurred' + error.message)
             res.status(500).json({message: "Ocurrio un error inesperado: ", error: error.message})

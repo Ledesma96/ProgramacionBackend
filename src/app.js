@@ -7,8 +7,8 @@ import usersRouter from "./routes/users.router.js"
 import handlebars  from "express-handlebars";
 import __dirname from "./uitils.js";
 import { Server, Socket } from "socket.io"
-import productsModel from "./Dao/mongo/models/products.models.js";
-import messagesModel from "./Dao/mongo/models/messages.models.js";
+import productsModel from "./Dao/mongo/models/products.model.js";
+import messagesModel from "./Dao/mongo/models/messages.model.js";
 import session from "express-session";
 import initializePassport from "./config/passport.config.js";
 import passport from "passport";
@@ -16,6 +16,7 @@ import cookieParser from "cookie-parser";
 import handleError from "./middlewere/error.js"
 import 'dotenv/config.js';
 import { addLoger } from "./config/logger.js";
+
 
 
 // import ProductManager from "./Dao/models/products.models.js";
@@ -46,6 +47,7 @@ app.use(session({
 initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
+
 
 //middlewere de usuario
 app.use((req, res, next) => {

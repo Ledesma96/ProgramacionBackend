@@ -1,7 +1,7 @@
 import CustomError from "../../services/error/custom_error.js";
 import EErrors from "../../services/error/enums.js";
 import { ErrorGetProductById } from "../../services/error/info.js";
-import productsModel from "./models/products.models.js";
+import productsModel from "./models/products.model.js";
 import mongoose from "mongoose";
 
 class ProductServices{

@@ -1,12 +1,14 @@
 import { Router } from "express";
 import { passportCall, passportCall1 } from "../uitils.js";
-import productsModel from "../Dao/mongo/models/products.models.js";
-import messageModel from "../Dao/mongo/models/messages.models.js"
+import productsModel from "../Dao/mongo/models/products.model.js";
+import messageModel from "../Dao/mongo/models/messages.model.js"
 import cartModel from "../Dao/mongo/models/cart.model.js";
 import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll, mokingProducts } from "../controllers/views.controller.js";
 import CustomError from "../services/error/custom_error.js";
 import EErrors from "../services/error/enums.js";
 import compression from "express-compression";
+import jwt from "jsonwebtoken";
+import 'dotenv/config.js';
 
 const router = Router();
 
@@ -34,7 +36,24 @@ router.get("/registre", auth, renderRegister)
 router.get("/profile", profile, renderProfile)
 
 //vista home
-router.get("/",  passportCall1("jwt",{ session:false}),getProductsViews)
+router.get("/",  passportCall1("jwt",{ session:false}), getProductsViews)
+
+router.get('/reset-password', (req, res) => {
+  const token = req.query.token;
+
+  if(!token) return res.redirect('http://127.0.0.1:8080/login')
+
+  try {
+    const decoded = jwt.verify(token, process.env.PRIVATE_KEY)
+    res.render('resetPassword', {email: decoded.email})
+  } catch (error) {
+    if (error.name === "TokenExpiredError") {
+      return res.redirect('http://127.0.0.1:8080/login');
+    } else {
+      return res.send({ success: false, message: error.message });
+    }
+  }
+})
 
 //moking products
 router.get("/mokingproducts", 
@@ -49,7 +68,7 @@ compression({
 function accesAdmin(req, res, next) {
   const user = req.user;
 
-  if(user.rol == "admin") return next()
+  if(user.rol == "admin" || user.rol == "premium") return next()
 
   return res.send("no tienes acceso a esta direccion")
 }

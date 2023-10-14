@@ -1,4 +1,4 @@
-import productsModel from "./models/products.models.js";
+import productsModel from "./models/products.model.js";
 
 class ViewsServices{
     getProductsPaginate = async(limit, page, sort, category) => {

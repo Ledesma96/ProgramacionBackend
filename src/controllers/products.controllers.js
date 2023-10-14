@@ -1,11 +1,11 @@
-import { Products } from "../Dao/factory.js";
+import { productsServices } from "../services/index.js";
 import ProductsDTO from "../Dao/DTO/products.dto.js";
 
-const prductServices = new Products()
+
 
 export const getProducts = async(req, res) => {
     const limit = req.query?.limit || 4;
-    const products = await prductServices.getProducts(limit)
+    const products = await productsServices.getProducts(limit)
     try {
         if(products){
             res.status(201).send(products)
@@ -20,7 +20,7 @@ export const getProducts = async(req, res) => {
 
 export const getProductById = async(req, res) => {
     const id = req.params.pid
-    const product = await prductServices.getProductById(id)
+    const product = await productsServices.getProductById(id)
     try {
         if(product){
             res.status(201).send(product)
@@ -45,7 +45,7 @@ export const createProduct = async(req, res) => {
     };
 
     const DTO = new ProductsDTO(product);
-    const newProduct = await prductServices.addProducts(DTO)
+    const newProduct = await productsServices.addProducts(DTO)
     try {
         if(newProduct){
             res.status(201).send(newProduct)
@@ -60,7 +60,7 @@ export const createProduct = async(req, res) => {
 
 export const deleteProduct = async(req, res) => {
     const id = req.params.pid
-    const product = await prductServices.deleteProduct(id)
+    const product = await productsServices.deleteProduct(id)
     try {
         if(product){
             res.status(201).send(product)
@@ -75,7 +75,7 @@ export const deleteProduct = async(req, res) => {
 
 export const updateProduct = async(req, res) => {
     const id = req.params.pid
-    const product = await prductServices.updateProduct(id, req.body)
+    const product = await productsServices.updateProduct(id, req.body)
     try {
         if(product){
             res.status(201).send(product)
