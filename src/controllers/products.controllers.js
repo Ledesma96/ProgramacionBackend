@@ -60,16 +60,19 @@ export const createProduct = async(req, res) => {
 
 export const deleteProduct = async(req, res) => {
     const id = req.params.pid
-    const product = await productsServices.deleteProduct(id)
+    const email = req.body.email
+    const product = await productsServices.deleteProduct(id, email)
     try {
-        if(product){
-            res.status(201).send(product)
+        if (product.success) {
+            console.log(200);
+            res.status(200).json({ message: product.message });
         } else {
-            res.status(400).json({message: product.message})
-        }  
+            console.log(400, product.message);
+            res.status(400).send({ message: product.message });
+        } 
     } catch (error) {
         logger.error('An error occurred' + error.message)
-        res.status(500).json({message: "Ocurrio un error inesperado", error: error})
+        res.status(500).send({message: "Ocurrio un error inesperado", error: error})
     }
 }
 

@@ -3,6 +3,7 @@ import EErrors from "../../services/error/enums.js";
 import { ErrorGetProductById } from "../../services/error/info.js";
 import productsModel from "./models/products.model.js";
 import mongoose from "mongoose";
+import usersModel from "./models/users.model.js";
 
 class ProductServices{
     constructor(){
@@ -65,18 +66,40 @@ class ProductServices{
       }
     }
 
-    deleteProduct = async (id) => {
+    deleteProduct = async (id, email) => {
       try {
-        const deletionResponse = await productsModel.deleteOne({ _id: id });
-        if (deletionResponse.deletedCount > 0) {
-          return { success: true, message: "Producto eliminado exitosamente" };
+        const user = await usersModel.findOne({ email: email });
+        if (user) {
+          if (user.rol === 'admin') {
+            const deletionResponse = await productsModel.deleteOne({ _id: id });
+            if (deletionResponse.deletedCount > 0) {
+              return { success: true, message: "Producto eliminado exitosamente" };
+            } else {
+              return { success: false, message: "Producto no encontrado" };
+            }
+          } else if (user.rol === 'premium') {
+            const product = await productsModel.findById(id);
+            if (product && product.owner === email) {
+              const deletePremium = await productsModel.deleteOne({ _id: id });
+              if (deletePremium.deletedCount > 0) {
+                return { success: true, message: "Producto eliminado exitosamente" };
+              } else {
+                return { success: false, message: "No puedes eliminar este producto" };
+              }
+            } else {
+              return { success: false, message: "No puedes eliminar este producto" };
+            }
+          } else {
+            return { success: false, message: "Rol de usuario no válido" };
+          }
         } else {
-          return { success: false, message: "Producto no encontrado" };
+          return { success: false, message: "Usuario no encontrado" };
         }
       } catch (error) {
         return { success: false, message: error.message };
       }
     };
+    
 
     updateProduct = async (id, updateData) => {
       try {
