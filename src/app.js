@@ -16,12 +16,21 @@ import cookieParser from "cookie-parser";
 import handleError from "./middlewere/error.js"
 import 'dotenv/config.js';
 import { addLoger } from "./config/logger.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUiExpress from "swagger-ui-express";
 
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.1',
+    info: {
+      title: 'Documentación de un e-commerce',
+      description: 'Este es un e-commerce de venta de bebidas',
+      version: '1.0.0'
+    }
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`]
+};
 
-
-// import ProductManager from "./Dao/models/products.models.js";
-//url mango db
-// const pd = new ProductManager()
 
 const app = express();
 
@@ -49,6 +58,8 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 
+
+
 //middlewere de usuario
 app.use((req, res, next) => {
   passport.authenticate('jwt', { session: false }, (err, user) => {
@@ -66,6 +77,10 @@ app.use((req, res, next) => {
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars")
+
+const DOCS = swaggerJSDoc(swaggerOptions)
+console.log(DOCS);
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(DOCS))
 
 app.use("/", viewsRouter)
 app.use("/api/products", productRouter);

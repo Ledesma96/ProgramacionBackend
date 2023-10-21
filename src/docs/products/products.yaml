@@ -1,0 +1,26 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtiene todos los productos
+      tags:
+        - products
+  /api/products/{pid}:
+    get:
+      summary: Obtiene el producto con el ID enviado por parámetros
+      tags:
+        - products
+  /api/products:
+    post:
+      summary: Carga un nuevo producto a la base de datos
+      tags:
+        - products
+  /api/products/{pid}:
+    delete:
+      summary: Elimina el producto indicado con el ID enviado por parámetros
+      tags:
+        - products
+  /api/products/{pid}:
+    put:
+      summary: Actualiza el campo indicado al producto con el ID enviado por parámetros (no es posible cambiar su ID)
+      tags:
+        - products

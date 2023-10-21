@@ -120,34 +120,34 @@ const initializePassport = () => {
             usernameField: "email"
         }, 
         async(req, username, password, done) => {
-        const {first_name, email, last_name, age} = req.body
+            const {first_name, email, last_name, age} = req.body
 
-    try {
-        const existUser = await usersModel.findOne({email: username})
-        if(!existUser){
-            const cart = new cartModel()
-            await cart.save()
-            const cartid = cart._id
-            const newUser ={
-                first_name,
-                last_name,
-                age,
-                email,
-                cartId: cartid,
-                password: createHash(password)
-            }
-            const userCreated = new usersModel(newUser);
-            await userCreated.save()
-            return done(null, userCreated)
-            
-        }
-        console.log(("El usuario ya existe"));
-        return done(null, false)
+            try {
+                const existUser = await usersModel.findOne({email: username})
+                if(!existUser){
+                    const cart = new cartModel()
+                    await cart.save()
+                    const cartid = cart._id
+                    const newUser ={
+                        first_name,
+                        last_name,
+                        age,
+                        email,
+                        cartId: cartid,
+                        password: createHash(password)
+                    }
+                    const userCreated = new usersModel(newUser);
+                    await userCreated.save()
+                    return done(null, userCreated)
+                }
+                console.log(("El usuario ya existe"));
+                return done(null, false)
         
-    } catch (error) {
-        return done("Error al registrar usuario", error)
-    }
-    }))
+            } catch (error) {
+                return done("Error al registrar usuario", error)
+            }
+        }
+    ))
 
     passport.use("login", new LocalStrategy(
         { usernameField: "email" },
