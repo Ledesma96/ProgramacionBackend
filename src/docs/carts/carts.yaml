@@ -1,0 +1,381 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: API de Carritos
+  description: API para gestionar carritos de compra
+
+paths:
+  /api/carts:
+    get:
+      summary: Obtiene carritos
+      description: Obtiene todos los carritos de la base de datos
+      responses:
+        '200':
+          description: Éxito - Carritos obtenidos con éxito
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/carrito"
+      tags:
+        - carts
+
+    post:
+      summary: Crea un carrito
+      description: Crea un carrito nuevo vacío
+      responses:
+        '200':
+          description: Éxito - Carrito creado exitosamente
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Carrito creado con éxito"
+        '400':
+          description: Error de petición - Error al crear un nuevo carrito
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Error al intentar crear un nuevo carrito"
+        '404':
+          description: Error interno del servidor - Ocurrió un error inesperado
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Ha ocurrido un error inesperado"
+      tags:
+        - carts
+
+  /api/carts/{cid}:
+    get:
+      summary: Obtiene un carrito
+      description: Obtiene un carrito con el ID especificado
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          type: string
+          description: ID para buscar el carrito en la base de datos
+          example: "151ad1f515d1c54a1d5c15s"
+      responses:
+        '200':
+          description: Éxito - Carrito encontrado en la base de datos
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cart:
+                    $ref: "#/components/schemas/carrito"
+        '400':
+          description: Error de petición - Error al encontrar el carrito con el ID especificado
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "El carrito con el ID especificado no existe"
+        '404':
+          description: Error interno del servidor - Ocurrió un error inesperado
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Ha ocurrido un error inesperado"
+      tags:
+        - carts
+
+    put:
+      summary: Vaciar carrito
+      description: Elimina todos los productos de un carrito en específico
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          type: string
+          description: ID para encontrar el carrito
+          example: "15sdf1vc55b2nb13b5b5b"
+      responses:
+        '201':
+          description: Éxito - Petición exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "El carrito se ha vaciado con éxito"
+        '400':
+          description: Error en petición - La petición no obtuvo respuesta exitosa
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "No fue posible vaciar el carrito"
+      tags:
+        - carts
+
+    delete:
+      summary: Eliminar un carrito
+      description: Elimina el carrito con el ID especificado
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          type: string
+          description: ID para buscar el carrito en la base de datos
+          example: "fs521f5ff2d1ffdf1fdvb2bffdf1"
+      responses:
+        '201':
+          description: Éxito - Petición resuelta correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Carrito encontrado y eliminado con éxito"
+        '400':
+          description: Error de petición - La petición no fue resuelta con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Carrito no encontrado en la base de datos"
+        '404':
+          description: Error interno del servidor - Error inesperado del servidor
+          content:
+            application/json:
+              schema:
+                type: string
+                example: "Ha ocurrido un error inesperado"
+      tags:
+        - carts
+
+  /api/carts/{cid}/product/{pid}:
+    post:
+      summary: Agregar producto
+      description: Agregar un producto en el carrito especificado o actualizar su cantidad
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          type: string
+          description: ID para buscar el carrito del usuario
+          example: "451fd1f23vd12gfff221bbf1b2"
+        - name: pid
+          in: path
+          required: true
+          type: string
+          description: ID para encontrar el producto que se desea agregar a la base de datos
+          example: "45224ffff51bbf1512f128"
+      requestBody:
+        description: Datos del producto a agregar
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  example: 4
+      responses:
+        '201':
+          description: Éxito - Petición resuelta con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Producto agregado con éxito"
+        '500':
+          description: Error interno del servidor - Error inesperado del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ha ocurrido un error inesperado"
+      tags:
+        - carts
+
+    delete:
+      summary: Eliminar producto del carrito
+      description: Buscar y eliminar un producto del carrito
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          type: string
+          description: ID para buscar el carrito del usuario
+          example: "451fd1f23vd12gfff221bbf1b2"
+        - name: pid
+          in: path
+          required: true
+          type: string
+          description: ID para encontrar el producto que se desea eliminar de la base de datos
+          example: "45224ffff51bbf1512f128"
+      responses:
+        '200':
+          description: Éxito - Petición resuelta con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Producto eliminado con éxito"
+        '400':
+          description: Error - La petición no se pudo resolver
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Producto no encontrado en el carrito"
+        '500':
+          description: Error interno del servidor - Error inesperado del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ha ocurrido un error inesperado"
+      tags:
+        - carts
+
+    put:
+      summary: Actualiza carrito
+      description: Busca y actualiza la cantidad de un producto en un carrito
+      parameters:
+      - name: cid
+        in: path
+        type: string
+        description: ID para buscar el carrito especificado
+        example: "fff41254ff1bfbb145"
+      - name: pid
+        in: path
+        type: string
+        description: ID para buscar el producto especificado en el carrito
+        example: "fbb41754fb1bfbb145"
+      requestBody:
+        description: Datos del producto a agregar
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: integer
+                  example: 4
+      responses:
+        '201':
+          description: Éxito - Petición resuelta con éxito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Producto actualizado en el carrito con éxito"
+        '400':
+          description: Error - La peticiòn no pudo resolverse con exito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Producto no encontrado en el carrito"
+        '500':
+          description: Error interno del servidor - Error inesperado del servidor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Ha ocurrido un error inesperado"
+      tags:
+        - carts
+  /api/carts/{cid}/purchase:
+    post:
+      summary: Compra
+      description: Realiza el proceso de creacion de ticket y controlando el stock
+      parameters:
+      - name: cid
+        in: params
+        type: string
+        description: Id para buscar el carrito en la base de datos
+        example: "fff2515b1bb1545fbfb5"
+      - name: purchaser
+        in: query
+        type: string
+        description: Email de la persona que realiza la compra
+        example: "example@gmail.com"
+      responses:
+        '200':
+          description: Exíto - Petición resuelta con exito
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Ticket creado con exito"
+        '400':
+          description: Error - Error en la peticion
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: "Ocurrio un error inesperado"
+      tags:
+        - carts
+
+components:
+  schemas:
+    carrito:
+      type: object
+      properties:
+        productos:
+          type: array
+          items:
+            type: object
+            properties:
+              pid:
+                type: string
+              quantity:
+                type: integer

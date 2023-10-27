@@ -14,10 +14,10 @@ export const getCart = async(req, res) => {
     try {
         const cart = await cartsServices.getFilterCart(cid)
         if (cart) {
-          res.send(cart);
+          res.status(200).send(cart);
         } else {
           logger.warning('Cart not found, invalid id: ' + cid)
-          res.send("El carrito con el ID: " + cid + " no existe");
+          res.status(400).send("El carrito con el ID: " + cid + " no existe");
         }
       } catch (err) {
         logger.error('An error occurred' + err.message)
@@ -30,10 +30,10 @@ export const CreateNewCart = async(req, res) => {
     const newCart = new CartsDTO({products: []})
     const cart = await cartsServices.createCart(newCart)
       if(cart){
-        res.send("Carrito creado exitosamente")
+        res.status(200).send("Carrito creado exitosamente")
       } else {
         logger.error('An unexpected error occurred')
-        res.send("Ah ocurrido un error");
+        res.status(400).send("Ah ocurrido un error");
       }
     } catch (error) {
       logger.error('An error occurred' + error.message)
@@ -124,7 +124,7 @@ export const cartPurchase = async (req, res) => {
   const cid = req.params.cid;
   const email = req.query.purchaser;
   try {
-      await cartsServicess.cartPurchase(cid, email);
+      await cartsServices.cartPurchase(cid, email);
       res.status(200).send({succes: true, message: "ticket creado con exito"})
   } catch (error) {
       logger.error('An error occurred' + error.message)

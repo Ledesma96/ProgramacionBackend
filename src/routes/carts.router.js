@@ -3,13 +3,16 @@ import { CreateNewCart, add, deleteCartCompleted, cartPurchase, deleteProduct, e
 const router = Router();
 
 router.get("/", getCarts)
-router.get("/:cid", getCart);
 router.post("/", CreateNewCart)
+
+router.get("/:cid", getCart);
+router.delete("/:cid",deleteCartCompleted)
+router.put("/:cid", emptyCart)
+
 router.post("/:cid/product/:pid", add)
 router.delete("/:cid/products/:pid", deleteProduct)
-router.delete("/:cid",deleteCartCompleted)
 router.put("/:cid/products/:pid", updateOne)
-router.put("/:cid", emptyCart)
+
 router.post("/:cid/purchase", cartPurchase)
 
 export default router;

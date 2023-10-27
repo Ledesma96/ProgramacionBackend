@@ -67,7 +67,6 @@ export const deleteProduct = async(req, res) => {
             console.log(200);
             res.status(200).json({ message: product.message });
         } else {
-            console.log(400, product.message);
             res.status(400).send({ message: product.message });
         } 
     } catch (error) {

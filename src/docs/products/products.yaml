@@ -1,26 +1,316 @@
+openapi: 3.0.1
+info:
+  title: "documentacion de un e-commerce"
+  description: "Este es un e-commerce de tienda de bebidas"
 paths:
   /api/products:
     get:
-      summary: Obtiene todos los productos
+      summary: Obtener los productos
+      description: obtiene todos los productos de la base de datos
+      parameters:
+      - name: page
+        in: query
+        description: pagina a mostrar
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        description: cantidad de prductos a mostrar por pagina
+        schema:
+          type: integer
+          default: 4
+      responses:
+        '201':
+          description: Éxito - Productos obtenidos con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Producto'
+                  total:
+                    type: integer
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+        '400':
+          description: Error de solicitud - Productos no encontrados.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '500':
+          description: Error del servidor - Ocurrió un error inesperado.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  error:
+                    type: object
+      tags:
+        - products
+    post:
+      summary: Agregar producto
+      description: Agrega un productos por formulario a la base de datos
+      parameters:
+      - name: title
+        in: body
+        description: Nombre del producto
+        schema:
+          type: string
+      - name: description
+        in: body
+        description: Descripsion del producto agregado
+        schema:
+          type: string
+      - name: price
+        in: body
+        description: Precio del producto
+        schema:
+          type: integer
+      - name: stock
+        in: body
+        description: cantidad de productos disponibles
+        schema:
+          type: integer
+      - name: code
+        in: body
+        description: codigo unico para identificar producto
+        schema:
+          type: integer
+      - name: category
+        in: body
+        description: categoria del producto para agrupacion
+        schema:
+          type: string
+      - name: status
+        in: body
+        description: estado del producto (disponible o no)
+        schema:
+          type: string
+      - name: owner
+        in: body
+        description: email del usuario que cargo el producto en caso de ser usuario "premium"
+        schema:
+          tpye: string
+          default: admin
+        example: example@gmail.com
+      - name: thumbnail
+        in: body
+        description: url de las imagenes del producto
+        schema:
+          type: objet
+        example: 10
+      
       tags:
         - products
   /api/products/{pid}:
     get:
-      summary: Obtiene el producto con el ID enviado por parámetros
+      summary: Obtiene un prducto
+      description: Obtiene el producto indicado mediante parametros
+      parameters:
+      - name: id
+        in: params
+        description: id del producto a buscar en la base de datos
+        schema:
+          type: string
+      responses:
+        '201':
+          description: Exíto - Producto encontrado en la base de datos
+          content:
+            aplication/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    example:
+                      item:
+                        $ref: '#/components/schemas/example-product'
+        '400':
+          description: Error de solicitud - Producto no encontrado en la base de datos
+          content:
+            aplication/json:
+              schema:
+                type: string
+        '500':
+          description: Error en el servidor - Error inesperado
+          content:
+            aplicatiom/json:
+              schema:
+                type: object
+              properties:
+                message:
+                  type: string
+                error:
+                  type: object
       tags:
         - products
-  /api/products:
-    post:
-      summary: Carga un nuevo producto a la base de datos
-      tags:
-        - products
-  /api/products/{pid}:
-    delete:
-      summary: Elimina el producto indicado con el ID enviado por parámetros
-      tags:
-        - products
-  /api/products/{pid}:
     put:
-      summary: Actualiza el campo indicado al producto con el ID enviado por parámetros (no es posible cambiar su ID)
+      summary: Actualiza un producto
+      description: Actualiza un campo especifico del producto en especifico
+      parameters:
+      - name: id
+        in: params
+        type: string
+        description: id para buscar el producto a actualizar
+        shcema:
+          type: string
+      - name: req.body
+        in: body
+        type: object
+        description: Clave y valor a actualizar
+        content:
+          aplication/json:
+          schema:
+            type: objet
+            propeties:
+              key:
+                type: string
+                example: "title"
+              value:
+                type: string
+                example: "fanta"
+      responses:
+        '201':
+          description: Exíto - Producto encontrado en la base de datos
+          content:
+            aplication/json:
+              schema:
+                type: object
+                properties:
+                  product:
+                    type: object
+                    example:
+                      item:
+                        $ref: '#/components/schemas/example-product'
+        '400':
+          description: Error de solicitud - Producto no encontrado en la base de datos
+          content:
+            aplication/json:
+              schema:
+                type: string
+        '500':
+          description: Error en el servidor - Error inesperado
+          content:
+            aplicatiom/json:
+              schema:
+                type: object
+              properties:
+                message:
+                  type: string
+                error:
+                  type: object
       tags:
         - products
+    delete:
+      summary: Elimina un producto
+      description: Elimina el producto especifico mediante un id enviado por params
+      parameters:
+      - name: id
+        in: params
+        type: string
+        desciption: id para buescar el porducto a eliminar
+        schema:
+          type: string
+      - name: email
+        in: body
+        type: string
+        description: Email para evaluar si el usuario es premium o admin para poder eliminar el producto
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Exíto - Producto encontrado y eliminado
+          content:
+            aplication/json:
+              schema:
+                type: object
+              properties:
+                message:
+                  type: string
+                  example: "Respuesta exitosa"
+        '400':
+          description: Error de peticion
+          content:
+            aplication/json:
+              schema:
+                type: object
+              properties:
+                message:
+                  type: string
+                  example: "Este usuario no tiene permisos"
+        '500':
+          description: Error interno en el server - error inesperado
+          content:
+            aplication/json:
+              schema:
+                type: object
+              properties:
+                message:
+                  type: string
+                error:
+                  type: string
+      tags: 
+        - products
+
+components:
+  schemas:
+    Producto:
+      type: object
+      properties:
+        title:
+          type: string
+        thumbnail:
+          type: string
+        code:
+          type: integer
+        stock:
+          type: integer
+        price:
+          type: number
+        description:
+          type: string
+        category:
+          type: string
+        owner:
+          type: string
+    example-product:
+      type: object
+      properties:
+        title:
+          type: string
+          example: "Coca-cola"
+        thumbnail:
+          type: string
+          example: "https://example.com/coca-cola.jpg"
+        code:
+          type: integer
+          example: 12345
+        stock:
+          type: integer
+          example: 100
+        price:
+          type: number
+          format: float
+          example: 2.99
+        description:
+          type: string
+          example: "Refrescante bebida de cola"
+        category:
+          type: string
+          example: "Bebidas"
+        owner:
+          type: string
+          example: "The Coca-Cola Company"
