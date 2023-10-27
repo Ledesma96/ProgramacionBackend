@@ -6,6 +6,7 @@ import EErrors from "../../services/error/enums.js"
 import jwt from "jsonwebtoken";
 import 'dotenv/config.js';
 import nodemailer from "nodemailer";
+import mongoose from "mongoose";
 
 class UserServices {
     constructor(){
@@ -93,6 +94,18 @@ class UserServices {
         return ({succes: false, message: error.message})
       }
 
+    }
+
+    changeRole = async(id, rol) => {
+      try {
+        const _id = new mongoose.Types.ObjectId(id);
+        const user = await usersModel.updateOne({_id: _id}, {$set:{rol}});
+        if (!user) return 'No es posible cambiar el rol'
+
+        return 'Rol cambiado con exito'
+      } catch (error) {
+        return error.message
+      }
     }
       
 }

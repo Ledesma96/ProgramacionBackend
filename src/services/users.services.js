@@ -3,15 +3,15 @@ export default class UsersRepository{
         this.dao = dao;
     }
 
-    LoginUser = async(user) => {
+    loginUser = async(user) => {
         return await this.dao.LoginUser(user)
     }
 
-    RegisterUser = async(user) => {
+    registerUser = async(user) => {
         return await this.dao.RegisterUser(user)
     }
 
-    LogOut = async(session) => {
+    logOut = async(session) => {
         return await this.dao.LogOut(session)
     }
 
@@ -19,7 +19,11 @@ export default class UsersRepository{
         return await this.dao.SendMail(email)
     }
 
-    NewPassword = async(mail, pass)=> {
+    newPassword = async(mail, pass)=> {
         return await this.dao.NewPassword(mail, pass)
+    }
+
+    changeRole = async(id, rol) => {
+        return await this.dao.changeRole(id, rol)
     }
 }

@@ -1,19 +1,19 @@
 import { Router } from "express";
 import passport from "passport";
 import { generateToken, authToken, passportCall, authorization } from "../uitils.js";
-import { login, logout, newPassword, register, sendMail } from "../controllers/users.controllers.js";
+import { changeRole, login, logout, newPassword, register, sendMail } from "../controllers/users.controllers.js";
 
 
 const router = Router();
 
 router.post("/login", passport.authenticate("login"), login)
-
 router.post("/register", passport.authenticate("register", {failureRedirect: "/register"}), register)
+
+
 
 router.get("/current", passportCall("jwt",{ session:false}), authorization("usuario"), (req,res) => {
   res.send({status: "success", payload: req.user })
 })
-
 router.get("/user", passportCall("jwt",{ session:false}), (req,res) => {
   res.send(req.user)
 })
@@ -21,8 +21,8 @@ router.get("/user", passportCall("jwt",{ session:false}), (req,res) => {
 router.delete("/logout", logout)
 
 router.post('/send-mail', sendMail)
-
 router.post('/change-password', newPassword)
+router.post('/premium/:uid', changeRole)
 
 //ruta get para obtener el user en el javascript del front
 router.get('/user', (req, res) => {

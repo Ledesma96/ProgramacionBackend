@@ -79,7 +79,6 @@ app.set("views", __dirname + "/views");
 app.set("view engine", "handlebars")
 
 const DOCS = swaggerJSDoc(swaggerOptions)
-console.log(DOCS);
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(DOCS))
 
 app.use("/", viewsRouter)
