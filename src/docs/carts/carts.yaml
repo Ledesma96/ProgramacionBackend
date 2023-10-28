@@ -378,4 +378,4 @@ components:
               pid:
                 type: string
               quantity:
-                type: integer
+                type: integer 
