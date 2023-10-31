@@ -5,7 +5,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha src/test/supertest.test.js"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +40,7 @@
   "devDependencies": {
     "@faker-js/faker": "^8.1.0",
     "chai": "^4.3.10",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }

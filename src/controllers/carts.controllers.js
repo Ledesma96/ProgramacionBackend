@@ -48,21 +48,22 @@ export const add = async (req, res) => {
   try {
     const responseCart = await cartsServices.addProductCart(cid, pid, quantity)
     if(responseCart.success){
-      res.status(201).json({message: responseCart.message})
+      res.status(201).json({success: responseCart.success, message: responseCart.message})
     }
   } catch (error) {
     logger.error('An error occurred' + error.message)
-    res.status(500).json({message:"Ah ocurrido un erro", error})  
+    res.status(500).json({message:"Ah ocurrido un erro", error: error.messaage})  
   }
 }
 
 export const deleteProduct = async(req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid
+
   try {
     const responseDeletProduct = await cartsServices.deleteProductCart(cid, pid)
     if(responseDeletProduct.success){
-      res.status(200).json({message: "Producto eliminado con exito"})
+      res.status(200).json({success: responseDeletProduct.success ,message: "Producto eliminado con exito"})
     } else {
       res.status(400).json({ message: responseDeletProduct.message });
     }

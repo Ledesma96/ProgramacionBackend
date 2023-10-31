@@ -77,6 +77,7 @@ export const deleteProduct = async(req, res) => {
 
 export const updateProduct = async(req, res) => {
     const id = req.params.pid
+    console.log(req.body);
     const product = await productsServices.updateProduct(id, req.body)
     try {
         if(product){

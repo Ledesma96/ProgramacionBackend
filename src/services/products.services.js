@@ -16,7 +16,7 @@ export default class ProductsRepository{
     }
 
     addProducts = async(product) => {
-        return await this.dao.addProduct(product)
+        return await this.dao.addProducts(product)
     }
 
     deleteProduct = async(id, email) => {
