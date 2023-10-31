@@ -3,7 +3,7 @@ import {userServices} from "../services/index.js";
 
 export const login = async (req, res) => {
     try {
-        if(!req.user) return res.status(400).json({message:"Credenciales invalidas"})
+        if(!req.user) return res.status(400).send({message:"Credenciales invalidas"})
         const user = req.user;
         const access_token = await userServices.loginUser(user);
         res.cookie("coderCookie", access_token, {
@@ -19,9 +19,10 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
     try {
         const user = req.body;
+        console.log(user);
         const access_token = await userServices.registerUser(user)
       
-        res.cookie("coderCookie", access_token, {
+        res.status(201).cookie("coderCookie", access_token, {
           maxAge: 60*60*10000,
           httpOnly: true
         }).send({message: "Logueado"})

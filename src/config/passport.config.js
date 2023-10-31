@@ -160,7 +160,7 @@ const initializePassport = () => {
                 }
                 if(!isValidPassword(user, password)){
                     console.error("Password invalido");
-                    return done(null, false)
+                    return done(null, false, { message: "Credenciales inválidas" });
                 }
                 return done(null, user)
                 
