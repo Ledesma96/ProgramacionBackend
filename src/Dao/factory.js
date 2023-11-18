@@ -6,6 +6,7 @@ export let Products
 export let Carts
 export let View
 export let Ticket
+export let User
 
 switch (config.persistence) {
     case "MEMORY" :
@@ -24,11 +25,12 @@ switch (config.persistence) {
         const {default: CartsFile} = await import("./files/CartManager.js");
         const {default: TicketFile } = await import("./files/TicketManager.js")
         const {default: ViewFile} = await import("./files/ViewManager.js")
-        console.log("connected to file");
+        const {default: UsersFile} = await import("./files/UsersManager.js")
         Products = ProductsFile
         Carts = CartsFile
         Ticket = TicketFile
         View = ViewFile
+        User = UsersFile
         break;
 
     case "MONGODB" :{
@@ -37,6 +39,7 @@ switch (config.persistence) {
         const {default: ViewMongo } = await import("./mongo/views.mongo.js");
         const {default: CartsMongo} = await import("./mongo/cart.mongo.js");
         const {default: TicketsMongo} = await import("./mongo/ticket.mongo.js")
+        const {default: UsersMongo} = await import("./mongo/user.mongo.js")
         mongoose.connect(process.env.URL_MONGO, {
             dbName: "ecommerce"
           })
@@ -51,6 +54,7 @@ switch (config.persistence) {
         Carts = CartsMongo
         View = ViewMongo
         Ticket = TicketsMongo
+        User = UsersMongo
         break;
     }
 }

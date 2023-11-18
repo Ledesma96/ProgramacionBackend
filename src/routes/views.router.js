@@ -35,6 +35,11 @@ router.get("/registre", auth, renderRegister)
 //profile
 router.get("/profile", profile, renderProfile)
 
+//change role
+router.get("/change-role", (req, res) => {
+  res.render('changeRole')
+})
+
 //vista home
 router.get("/",  passportCall1("jwt",{ session:false}), getProductsViews)
 

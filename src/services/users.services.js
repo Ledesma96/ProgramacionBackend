@@ -16,7 +16,7 @@ export default class UsersRepository{
     }
 
     sendMail = async(email) => {
-        return await this.dao.SendMail(email)
+        return await this.dao.sendMail(email)
     }
 
     newPassword = async(mail, pass)=> {

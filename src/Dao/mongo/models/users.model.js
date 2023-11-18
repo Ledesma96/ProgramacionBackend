@@ -18,6 +18,10 @@ const usersSchema = new mongoose.Schema({
         type: String,
         enum: ["admin", "usuario", "premium"],
         default: "usuario"
+    },
+    documents: {
+        name: String,
+        reference: String,
     }
 });
 

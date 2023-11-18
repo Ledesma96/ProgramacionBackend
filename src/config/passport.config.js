@@ -49,7 +49,6 @@ const initializePassport = () => {
     async(accessToken, refreshToken, profile,email, done) => {
         try {
             const user = await usersModel.findOne({email: email._json.email})
-            console.log("user: ", user);
             if(user) {
                 console.log("El usuario ya existe");
                 return done(null, user)

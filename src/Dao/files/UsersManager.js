@@ -8,7 +8,7 @@ export default class user{
         }
         this.#path = "./users.json"
     }
-    addUser(user){
+    RegisterUser = (user) => {
         let users = JSON.parse(fs.readFileSync(this.#path));
         users.push(user);
         fs.writeFileSync(this.#path, JSON.stringify(users));

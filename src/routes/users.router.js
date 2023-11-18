@@ -2,7 +2,7 @@ import { Router } from "express";
 import passport from "passport";
 import { generateToken, authToken, passportCall, authorization } from "../uitils.js";
 import { changeRole, login, logout, newPassword, register, sendMail } from "../controllers/users.controllers.js";
-
+import { upload } from "../middlewere/file.js";
 
 const router = Router();
 
@@ -22,7 +22,7 @@ router.delete("/logout", logout)
 
 router.post('/send-mail', sendMail)
 router.post('/change-password', newPassword)
-router.post('/premium/:uid', changeRole)
+router.post('/premium/:uid', upload.array('profile'), changeRole)
 
 //ruta get para obtener el user en el javascript del front
 router.get('/user', (req, res) => {
