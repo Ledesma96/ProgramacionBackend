@@ -1,1 +1,44 @@
-<p>hola</p>
+<form  onsubmit="handleSubmit(event, '{{id}}')" enctype="multipart/form-data">
+    <label for="">Cargar identificacion</label>
+    <input id="identificacion" type="file" name="identificacion">
+    <label for="">Cargar comprobante de domicilio</label>
+    <input id="domicilio" type="file" name="domicilio">
+    <label for="">Cargar comprobante de cuenta</label>
+    <input id="cuenta" type="file" name="cuenta">
+    <input type="submit" value="Enviar">
+</form>
+<script>
+    const handleSubmit = async (e, id) => {
+    e.preventDefault();
+    const identificacion = document.getElementById("identificacion");
+    const domicilio = document.getElementById("domicilio");
+    const cuenta = document.getElementById("cuenta");
+
+    if (!cuenta.value || !domicilio.value || !identificacion.value) {
+        console.log('Algunos campos están vacíos');
+    } else {
+        const formData = new FormData();
+        formData.append('identificacion', identificacion.files[0]);
+        formData.append('domicilio', domicilio.files[0]);
+        formData.append('cuenta', cuenta.files[0]);
+        formData.append('fileType', 'profile');
+
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/api/sessions/premium/${id}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                console.log('Solicitud exitosa');
+
+            } else {
+                console.error('Error en la solicitud:', response.status);
+            }
+        } catch (error) {
+            console.error('Error en la solicitud:', error);
+        }
+    }
+};
+
+</script>

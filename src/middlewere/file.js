@@ -3,8 +3,9 @@ import path from "path";
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        console.log('Entrando al middleware multer');
+        console.log(file);
         const fileType = req.body.fileType;
-
         let uploadPath = '';
 
         switch (fileType) {

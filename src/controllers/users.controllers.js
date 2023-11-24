@@ -71,6 +71,7 @@ export const newPassword = async (req, res) => {
 
 export const changeRole = async (req, res) => {
     const id = req.params.uid
+    
     const rol = req.body.rol
 
     try {

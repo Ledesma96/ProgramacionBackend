@@ -21,7 +21,6 @@ function auth(req, res, next) {
 // perfil de usuario
 function profile(req, res, next) {
   if(req.user) return next()
-  
   return res.redirect("/login")
 }
 
@@ -37,7 +36,9 @@ router.get("/profile", profile, renderProfile)
 
 //change role
 router.get("/change-role", (req, res) => {
-  res.render('changeRole')
+  const id = req.user._id
+  console.log(id);
+  res.render('changeRole', {id} )
 })
 
 //vista home
