@@ -39,7 +39,7 @@ class UserServices {
         }
     }
 
-    LogOut = (session) => {
+    LogOut = async(session) => {
         return new Promise((resolve, reject) => {
           session.destroy((err) => {
             if (err) {
@@ -107,7 +107,6 @@ class UserServices {
         return error.message
       }
     }
-      
 }
 
 export default UserServices

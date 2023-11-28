@@ -1,4 +1,5 @@
 import {usersServices} from "../services/index.js";
+import { logger } from "../config/logger.js"
 
 
 export const login = async (req, res) => {
@@ -34,9 +35,12 @@ export const register = async (req, res) => {
 
 export const logout = async (req, res) => {
     try {
+        const user = req.user
         const session = req.session
         const end = await usersServices.logOut(session);
         if(end.success){
+            user.last_connection = new Date().toLocaleString()
+            await user.save()
             res.clearCookie('coderCookie');
             res.status(201).json(end.message)
         } else {

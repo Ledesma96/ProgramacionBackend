@@ -22,7 +22,8 @@ const usersSchema = new mongoose.Schema({
     documents: {
         name: String,
         reference: String,
-    }
+    },
+    last_connection: String,
 });
 
 const usersModel = mongoose.model(usersCollection, usersSchema);

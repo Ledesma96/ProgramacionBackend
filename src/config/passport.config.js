@@ -152,7 +152,7 @@ const initializePassport = () => {
         { usernameField: "email" },
         async(username, password, done) => {
             try {
-                const user = await usersModel.findOne({email: username}).lean().exec()
+                const user = await usersModel.findOne({email: username})
                 if(!user){
                     console.error("El usuario no existe")
                     return done(null, false)
@@ -161,6 +161,9 @@ const initializePassport = () => {
                     console.error("Password invalido");
                     return done(null, false, { message: "Credenciales inválidas" });
                 }
+                user.last_connection = true
+
+                await user.save()
                 return done(null, user)
                 
             } catch (error) {

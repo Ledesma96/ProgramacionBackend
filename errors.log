@@ -35,3 +35,5 @@ error: An error occurredproducts.sort is not a function
 error: An error occurredproducts.sort is not a function
 error: An error occurredproducts.sort is not a function
 error: An error occurreduser is not defined
+error: An error occurredusers validation failed: last_connection: Cast to string failed for value "{ date: '2023-11-28', time: '13:01:32' }" (type Object) at path "last_connection"
+error: An error occurredCannot read properties of undefined (reading 'split')
