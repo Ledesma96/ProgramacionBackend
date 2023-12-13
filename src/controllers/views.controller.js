@@ -121,3 +121,7 @@ export const getUsers = async(req,res) => {
     const users = await viewsServices.getUsers()
     res.render('userList', {users})
 }
+
+export const error = async(req, res) => {
+    res.render('error', {})
+}

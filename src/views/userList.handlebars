@@ -59,7 +59,7 @@
 
     btn.addEventListener("click", async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8080/api/sessions/delete-users-disconnect',{
+        const response = await fetch('/api/sessions/delete-users-disconnect',{
           method: "DELETE"
         });
         const data = await response.json();
@@ -80,7 +80,7 @@
 
   const deleteUser = async (id) => {
     try{
-      const response = await fetch(`http://127.0.0.1:8080/api/sessions/delete-user/${id}`,{
+      const response = await fetch(`/api/sessions/delete-user/${id}`,{
         method: "DELETE"
       })
       const data = await response.json()
@@ -102,7 +102,7 @@
       e.preventDefault()
       const rol = document.getElementById('roleSelect').value;
       console.log(rol)
-      const response = await fetch (`http://127.0.0.1:8080/api/sessions/change-role/${id}`,{
+      const response = await fetch (`/api/sessions/change-role/${id}`,{
         method:'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({rol})

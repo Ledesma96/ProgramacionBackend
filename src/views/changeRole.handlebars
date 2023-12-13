@@ -24,7 +24,7 @@
         formData.append('fileType', 'profile');
 
         try {
-            const response = await fetch(`http://127.0.0.1:8080/api/sessions/premium/${id}`, {
+            const response = await fetch(`api/sessions/premium/${id}`, {
                 method: 'POST',
                 body: formData
             });

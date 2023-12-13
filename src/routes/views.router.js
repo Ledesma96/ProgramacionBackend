@@ -3,7 +3,7 @@ import { authorization, passportCall, passportCall1 } from "../uitils.js";
 import productsModel from "../Dao/mongo/models/products.model.js";
 import messageModel from "../Dao/mongo/models/messages.model.js"
 import cartModel from "../Dao/mongo/models/cart.model.js";
-import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll, mokingProducts, getUsers } from "../controllers/views.controller.js";
+import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll, mokingProducts, getUsers, error } from "../controllers/views.controller.js";
 import CustomError from "../services/error/custom_error.js";
 import EErrors from "../services/error/enums.js";
 import compression from "express-compression";
@@ -34,6 +34,8 @@ router.get("/registre", auth, renderRegister)
 //profile
 router.get("/profile", profile, renderProfile)
 
+//error
+router.get("/error", error)
 //users list
 router.get('/users-list',authorization('admin'), getUsers)
 //change role
@@ -49,14 +51,14 @@ router.get("/",  passportCall1("jwt",{ session:false}), getProductsViews)
 router.get('/reset-password', (req, res) => {
   const token = req.query.token;
 
-  if(!token) return res.redirect('http://127.0.0.1:8080/login')
+  if(!token) return res.redirect('/login')
 
   try {
     const decoded = jwt.verify(token, process.env.PRIVATE_KEY)
     res.render('resetPassword', {email: decoded.email})
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      return res.redirect('http://127.0.0.1:8080/login');
+      return res.redirect('/login');
     } else {
       return res.send({ success: false, message: error.message });
     }

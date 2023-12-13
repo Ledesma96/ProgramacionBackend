@@ -24,8 +24,8 @@ export const StripePayment = async (req, res) => {
         line_items: lineItems,
         payment_method_types: ['card'],
         mode: 'payment',
-        success_url: 'https://localhost:8080/',
-        cancel_url: 'https://localhost:8080/error'
+        success_url: '/',
+        cancel_url: '/error'
     });
 
     return res.json(session);

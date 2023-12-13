@@ -83,7 +83,7 @@ const purchase = async (cid, purchaser) => {
 
 const payment = async (cart) => {
   try {
-    const response = await fetch(`http://localhost:8080/api/payments-stripe/payment`, { 
+    const response = await fetch(`/api/payments-stripe/payment`, { 
       method: "POST", 
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({ cart: cart }),
