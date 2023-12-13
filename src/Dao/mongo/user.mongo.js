@@ -62,7 +62,7 @@ class UserServices {
         subject: 'Reset password',
         html:`<div>
                 <p> Has click en el siguiente enlace para restablecer tu contraseña</p>
-                <a href='http://127.0.0.1:8080/reset-password?token=${token}'>Restablecer password</a>
+                <a href='https://programacionbackend-production-a757.up.railway.app/reset-password?token=${token}'>Restablecer password</a>
               </div>`
       })
 
