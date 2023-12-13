@@ -69,12 +69,12 @@ export const passportCall1 = strategy => {
 
 
 export const authorization = role => {
-
+   
     return async (req, res, next) => {
         const user = req.user;
 
         if(!user) return res.status(401).send({error: "No autorizado"})
-        if(user.user.rol !== role) return res.status(403).send({error: "el usuario no tiene permisos"})
+        if(user.rol !== role) return res.status(403).send({error: "el usuario no tiene permisos"})
     
         next()
     }

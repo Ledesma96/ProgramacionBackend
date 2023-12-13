@@ -4,7 +4,9 @@ import cartRouter from "./routes/carts.router.js";
 import viewsRouter from "./routes/views.router.js"
 import ticketsRouter from "./routes/tickets.router.js"
 import usersRouter from "./routes/users.router.js"
+import stripeRouter from "./routes/stripe.router.js"
 import handlebars  from "express-handlebars";
+import exphbs from "handlebars"
 import __dirname from "./uitils.js";
 import { Server, Socket } from "socket.io"
 import productsModel from "./Dao/mongo/models/products.model.js";
@@ -73,6 +75,17 @@ app.use((req, res, next) => {
 });
 
 
+exphbs.registerHelper('compare', function (v1, operator, v2, options) {
+  switch (operator) {
+    case '===':
+      return v1 === v2 ? options.fn(this) : options.inverse(this);
+    case '!==':
+      return v1 !== v2 ? options.fn(this) : options.inverse(this);
+    default:
+      return false;
+  }
+});
+
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
@@ -82,6 +95,7 @@ const DOCS = swaggerJSDoc(swaggerOptions)
 app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(DOCS))
 
 app.use("/", viewsRouter)
+app.use('/api/payments-stripe', stripeRouter)
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", usersRouter)

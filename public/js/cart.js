@@ -80,3 +80,20 @@ const purchase = async (cid, purchaser) => {
     console.log("Ah ocurrido un error inesperado");
   }
 };
+
+const payment = async (cart) => {
+  try {
+    const response = await fetch(`http://localhost:8080/api/payments-stripe/payment`, { 
+      method: "POST", 
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ cart: cart }),
+    });
+    const data = await response.json();
+    console.log(data);
+    window.location.href = data.url
+   
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+

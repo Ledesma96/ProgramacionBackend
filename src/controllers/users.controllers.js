@@ -74,10 +74,11 @@ export const newPassword = async (req, res) => {
 }
 
 export const changeRole = async (req, res) => {
+    console.log('entra');
     const id = req.params.uid
-    
+    console.log(id);
     const rol = req.body.rol
-
+    console.log(rol);
     try {
         const changeRoleUser = await usersServices.changeRole(id, rol)
         if(!changeRoleUser) res.status(400).json({succes: false, message: changeRoleUser})
@@ -85,5 +86,27 @@ export const changeRole = async (req, res) => {
         res.status(200).json({succes: true, message: changeRoleUser})
     } catch (error) {
         res.status(500).send({succes: false, message: error.message})
+    }
+}
+
+export const deleteUsersDisconnect = async (req, res) => {
+    try {
+        const deletedUsers = await usersServices.deleteUsersDisconnect();
+        if(!deletedUsers) return res.status(400).json({succes: false, message: deletedUsers.message});
+
+        return res.status(200).json({succes: true, message: deletedUsers.message})
+    } catch (error) {
+        return res.status(500).json({succes: false, message: error.message})
+    }
+}
+
+export const deleteOneUser = async (req, res) => {
+    try {
+        const id = req.params
+
+        const deletedUser = await usersServices.deleteOneUser(id)
+        res.status(200).json({succes:true, message: 'Usuario eliminado con exito'})
+    } catch (error) {
+        res.status(500).json({succes: false, message: error.message})
     }
 }

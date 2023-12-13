@@ -14,4 +14,8 @@ export default class ViewsRepository{
     getProductDetail = async(id) => {
         return this.dao.getProductDetail(id)
     }
+
+    getUsers = async() => {
+        return this.dao.getUsers();
+    }
 }

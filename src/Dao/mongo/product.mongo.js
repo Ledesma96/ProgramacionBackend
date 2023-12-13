@@ -4,6 +4,7 @@ import { ErrorGetProductById } from "../../services/error/info.js";
 import productsModel from "./models/products.model.js";
 import mongoose from "mongoose";
 import usersModel from "./models/users.model.js";
+import transport from "../../config/mailing.js";
 
 class ProductServices{
     constructor(){
@@ -71,8 +72,24 @@ class ProductServices{
         const user = await usersModel.findOne({ email: email });
         if (user) {
           if (user.rol === 'admin') {
+
+            const product = await productsModel.findById(id);
+
             const deletionResponse = await productsModel.deleteOne({ _id: id });
+
             if (deletionResponse.deletedCount > 0) {
+
+              if(product.owner !== 'admin'){
+
+                const result = await transport.sendMail({
+                  from: 'mailingprueba61@gmail.com',
+                  to: product.owner,
+                  subject: 'Cuenta eliminada',
+                  html: `<div>
+                          <p> Se ha eliminado ${product.title} de la lista de productos</p>
+                        </div>`
+              });
+              }
               return { success: true, message: "Producto eliminado exitosamente" };
             } else {
               return { success: false, message: "Producto no encontrado" };

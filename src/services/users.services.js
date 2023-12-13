@@ -26,4 +26,12 @@ export default class UsersRepository{
     changeRole = async(id, rol) => {
         return await this.dao.changeRole(id, rol)
     }
+
+    deleteUsersDisconnect= async() => {
+        return await this.dao.deleteUsersDisconnect()
+    }
+
+    deleteOneUser = async(id) => {
+        return await this.dao.deleteOneUser(id)
+    }
 }

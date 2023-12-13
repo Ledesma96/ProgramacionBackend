@@ -44,9 +44,10 @@ export const CreateNewCart = async(req, res) => {
 export const add = async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
+  const user = req.user
   const quantity = parseInt(req.body.quantity || 1)
   try {
-    const responseCart = await cartsServices.addProductCart(cid, pid, quantity)
+    const responseCart = await cartsServices.addProductCart(cid, pid, quantity, user)
     if(responseCart.success){
       res.status(201).json({success: responseCart.success, message: responseCart.message})
     }

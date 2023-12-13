@@ -161,7 +161,7 @@ const initializePassport = () => {
                     console.error("Password invalido");
                     return done(null, false, { message: "Credenciales inválidas" });
                 }
-                user.last_connection = true
+                user.last_connection = new Date()
 
                 await user.save()
                 return done(null, user)

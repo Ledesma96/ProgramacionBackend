@@ -1,7 +1,7 @@
 import { Router } from "express";
 import passport from "passport";
 import { generateToken, authToken, passportCall, authorization } from "../uitils.js";
-import { changeRole, login, logout, newPassword, register, sendMail } from "../controllers/users.controllers.js";
+import { changeRole, deleteOneUser, deleteUsersDisconnect, login, logout, newPassword, register, sendMail } from "../controllers/users.controllers.js";
 import { upload } from "../middlewere/file.js"
 
 const router = Router();
@@ -19,10 +19,13 @@ router.get("/user", passportCall("jwt",{ session:false}), (req,res) => {
 })
 
 router.delete("/logout", logout)
+router.delete('/delete-users-disconnect', deleteUsersDisconnect)
+router.delete('/delete-user/:id', deleteOneUser)
 
 router.post('/send-mail', sendMail)
 router.post('/change-password', newPassword)
 router.post('/premium/:uid', upload.array('profile'), changeRole)
+router.post('/change-role/:uid', changeRole)
 
 //ruta get para obtener el user en el javascript del front
 router.get('/user', (req, res) => {

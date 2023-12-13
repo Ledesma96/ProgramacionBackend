@@ -115,6 +115,9 @@ export const mokingProducts = async(req, res) => {
         logger.error('An error occurred ' + error.message)
         return {success: false, message: "Product not found"}
     }
+}
 
-
+export const getUsers = async(req,res) => {
+    const users = await viewsServices.getUsers()
+    res.render('userList', {users})
 }

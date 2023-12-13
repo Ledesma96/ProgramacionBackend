@@ -15,8 +15,8 @@ export default class CartRepository{
         return this.dao.createCart(newCart)
     }
 
-    addProductCart = async(cid, pid, quantity) => {
-        return this.dao.addProductCart(cid, pid, quantity)
+    addProductCart = async(cid, pid, quantity, user) => {
+        return this.dao.addProductCart(cid, pid, quantity, user)
     }
 
     deleteProductCart = async(cid, pid) => {

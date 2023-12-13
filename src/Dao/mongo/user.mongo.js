@@ -5,9 +5,8 @@ import { generateUserErrorInfo } from "../../services/error/info.js";
 import EErrors from "../../services/error/enums.js"
 import jwt from "jsonwebtoken";
 import 'dotenv/config.js';
-import nodemailer from "nodemailer";
 import mongoose from "mongoose";
-
+import transport from "../../config/mailing.js";
 class UserServices {
     constructor(){
         this.userModel = new usersModel();
@@ -55,15 +54,7 @@ class UserServices {
       
 
     sendMail = async(email) => {
-      const transport =  nodemailer.createTransport({
-        service: 'gmail',
-        port:587,
-        auth:{
-          user:'mailingprueba61@gmail.com',
-          pass:'bgrroqifncmvzxzk'
-        }
-      
-      })
+     
       const token = jwt.sign({email}, process.env.PRIVATE_KEY,{expiresIn: "1h"})
       const result = await transport.sendMail({
         from :'mailingprueba61@gmail.com',
@@ -107,6 +98,60 @@ class UserServices {
         return error.message
       }
     }
+
+    deleteUsersDisconnect = async() => {
+      try {
+        const actualDay = new Date().toLocaleString();
+    
+        const twoDaysAgo = new Date(actualDay);
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        
+    
+        const usersEliminated = await usersModel.find({last_connection: {$lt: twoDaysAgo}});
+
+        const deletedUsers = await usersModel.deleteMany({
+          last_connection: { $lt: twoDaysAgo },
+          rol: { $ne: 'admin' } 
+        })
+        
+        if (usersEliminated.length > 0) {
+          for (let i = 0; i < usersEliminated.length; i++) {
+              const email = usersEliminated[i].email;
+              try {
+                  const result = await transport.sendMail({
+                      from: 'mailingprueba61@gmail.com',
+                      to: email,
+                      subject: 'Cuenta eliminada',
+                      html: `<div>
+                              <p> Se ha eliminado su cuenta por inactividad</p>
+                            </div>`
+                  });
+                  console.log(`Correo enviado a ${email}: ${result.response}`);
+              } catch (error) {
+                  console.error(`Error al enviar correo a ${email}: ${error.message}`);
+              }
+          }
+          return { success: true, message: `Se eliminaron ${usersEliminated.length} usuarios` };
+      }
+
+        return ({message: 'No se encontraron usuarios para eliminar'})
+
+
+      } catch (error) {
+        return {error: error.message};
+      }
+    }
+
+    deleteOneUser = async(id) => {
+      try {
+        const _id = new mongoose.Types.ObjectId(id);
+        const deletedUser = await usersModel.deleteOne({_id: _id, rol: {$ne: 'admin'}});
+        return deletedUser
+      } catch (error) {
+        throw error
+      }
+    }
+
 }
 
 export default UserServices

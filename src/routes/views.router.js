@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { passportCall, passportCall1 } from "../uitils.js";
+import { authorization, passportCall, passportCall1 } from "../uitils.js";
 import productsModel from "../Dao/mongo/models/products.model.js";
 import messageModel from "../Dao/mongo/models/messages.model.js"
 import cartModel from "../Dao/mongo/models/cart.model.js";
-import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll, mokingProducts } from "../controllers/views.controller.js";
+import { getProductsViews, renderDetailProduct, renderLogin, renderProfile, renderRegister, getProductsAll, mokingProducts, getUsers } from "../controllers/views.controller.js";
 import CustomError from "../services/error/custom_error.js";
 import EErrors from "../services/error/enums.js";
 import compression from "express-compression";
@@ -34,6 +34,8 @@ router.get("/registre", auth, renderRegister)
 //profile
 router.get("/profile", profile, renderProfile)
 
+//users list
+router.get('/users-list',authorization('admin'), getUsers)
 //change role
 router.get("/change-role", (req, res) => {
   const id = req.user._id

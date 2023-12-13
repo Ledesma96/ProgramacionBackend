@@ -31,29 +31,34 @@ class CartServices {
         }
     }
 
-    addProductCart = async(cid, pid, quantity) => {
+    addProductCart = async(cid, pid, quantity, user) => {
         try{
+            const buyer = user
             let cart = await cartModel.findById(cid)
             let productos = await productsModel.findById(pid)
-            if(!cart){
-                cart = new cartModel({products:{pid,quantity}});
-                await cart.save();
-                return {succes: true, message: "Se ha creado un nuevo carrito con el producto pedido"}
-            }
-                if (productos){
-                    const existProduct = cart.products.find((item) => item.pid.toString() === pid);
-                    if(existProduct){
-                        existProduct.quantity += quantity
-                        await cart.save()
-                        return {success: true, message:"Se actualizo la cantidad en el carrito"}
-                    } else {
-                        cart.products.push({ pid, quantity });
-                        await cart.save()
-                    }
-                    return({success: true, message: "producto guardado con exito"})
-                    } else {
-                        return {seccess: false, message: "no existe el producto"}
+            if(buyer.rol == 'premium' && productos.owner == buyer.email){
+                return {succes: false, message: "No es posible agregar tu producto al carrito"}
+            } else {
+                if(!cart){
+                    cart = new cartModel({products:{pid,quantity}});
+                    await cart.save();
+                    return {succes: true, message: "Se ha creado un nuevo carrito con el producto pedido"}
                 }
+                    if (productos){
+                        const existProduct = cart.products.find((item) => item.pid.toString() === pid);
+                        if(existProduct){
+                            existProduct.quantity += quantity
+                            await cart.save()
+                            return {success: true, message:"Se actualizo la cantidad en el carrito"}
+                        } else {
+                            cart.products.push({ pid, quantity });
+                            await cart.save()
+                        }
+                        return({success: true, message: "producto guardado con exito"})
+                        } else {
+                            return {seccess: false, message: "no existe el producto"}
+                    }
+            }
         }catch (e) {
             throw e
         }

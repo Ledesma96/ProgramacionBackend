@@ -1,4 +1,5 @@
 import productsModel from "./models/products.model.js";
+import usersModel from "./models/users.model.js";
 
 class ViewsServices{
     getProductsPaginate = async(limit, page, sort, category) => {
@@ -31,6 +32,10 @@ class ViewsServices{
         return products
     }
 
+    getUsers = async() => {
+        const users = await usersModel.find().lean().exec();
+        return users
+    }
     
 }
 
